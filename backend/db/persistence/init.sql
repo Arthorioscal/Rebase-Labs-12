@@ -1,3 +1,11 @@
+-- Doctors
+CREATE TABLE IF NOT EXISTS doctors (
+    crm VARCHAR(10) PRIMARY KEY,
+    crm_state CHAR(2) NOT NULL CHECK (LENGTH(crm_state) = 2),
+    name VARCHAR(100) NOT NULL,
+    email VARCHAR(100) NOT NULL UNIQUE
+);
+
 -- Patient
 CREATE TABLE IF NOT EXISTS patients (
     cpf VARCHAR(14) PRIMARY KEY,
@@ -10,13 +18,6 @@ CREATE TABLE IF NOT EXISTS patients (
     doctor_crm CHAR(10) REFERENCES doctors(crm) ON DELETE SET NULL
 );
 
--- Doctors
-CREATE TABLE IF NOT EXISTS doctors (
-    crm VARCHAR(10) PRIMARY KEY,
-    crm_state CHAR(2) NOT NULL CHECK (LENGTH(crm_state) = 2),
-    name VARCHAR(100) NOT NULL,
-    email VARCHAR(100) NOT NULL UNIQUE
-);
 
 -- Tests
 CREATE TABLE IF NOT EXISTS tests (
