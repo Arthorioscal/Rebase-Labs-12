@@ -1,7 +1,7 @@
 require 'sinatra/base'
 require 'pg'
 
-class Controller < Sinatra::Base
+class Controller < Sinatra::Application
   def db_connection
     PG.connect(
       host: ENV['DATABASE_HOST'],

@@ -1,4 +1,5 @@
-require 'sinatra'
+require 'sinatra/base'
+require 'pg'
 require_relative '../app/controllers/controller'
 
-run Sinatra::Application
+run Controller

@@ -10,8 +10,8 @@ RUN bundle install
 
 COPY . .
 
-COPY db/persistence/import.rb /app/import.rb
+EXPOSE 4567
 
-COPY db/persistence/data.csv /app/backend/db/persistence/data.csv
+CMD ["bundle", "exec", "puma", "-C", "config/puma.rb"]
 
-CMD ["ruby", "/app/import.rb"]
+#CMD ["bundle", "exec", "rackup", "--host", "0.0.0.0", "--port", "4567", "config/config.ru"]

@@ -2,7 +2,7 @@ require 'csv'
 require 'pg'
 
 conn = PG.connect(
-  dbname: 'postgres',
+  dbname: 'rebaselabs',
   user: 'user',
   password: 'pass',
   host: 'postgres',

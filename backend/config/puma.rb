@@ -4,5 +4,6 @@ threads threads_count, threads_count
 
 preload_app!
 
-port        ENV.fetch('PORT', 9292)
+rackup      File.expand_path('config.ru', __dir__)
+port        ENV.fetch('PORT', 4567)
 environment ENV.fetch('RACK_ENV') { 'development' }

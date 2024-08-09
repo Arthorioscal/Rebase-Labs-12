@@ -1,32 +1,30 @@
 services:
   postgres:
-    image: postgres
+    image: postgres:16.3
     environment:
       POSTGRES_USER: user
       POSTGRES_PASSWORD: pass
-      POSTGRES_DB: postgres
+      POSTGRES_DB: rebaselabs
     ports:
       - "5432:5432"
     volumes:
       - db_data:/var/lib/postgresql/data
       - ./backend/db/persistence/init.sql:/docker-entrypoint-initdb.d/init.sql
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U user"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
 
-  app:
+  backend:
     build:
       context: ./backend
     depends_on:
-      postgres:
-        condition: service_healthy
+      - postgres
     environment:
       DATABASE_HOST: postgres
       DATABASE_USER: user
       DATABASE_PASSWORD: pass
-      DATABASE_NAME: postgres
+      DATABASE_NAME: rebaselabs
+      DATABASE_PORT: 5432
+      PORT: 4567
+    ports:
+      - "4567:4567"
 
 volumes:
   db_data:
