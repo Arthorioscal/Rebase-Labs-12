@@ -1,7 +1,11 @@
+# frozen_string_literal: true
+
 require 'sinatra/base'
 require 'pg'
 require 'json'
-require_relative '../../lib/db_connection'
+require_relative '../../lib/database_connection'
+require_relative '../models/doctor'
+
 
 class Controller < Sinatra::Application
   get '/' do
@@ -15,9 +19,15 @@ class Controller < Sinatra::Application
   end
 
   get '/doctors' do
-    conn = DatabaseConnection.db_connection
-    @doctors = conn.exec('SELECT * FROM doctors')
-    erb :doctors
+    doctors = Doctor.all
+    doctors.map do |doctor|
+      {
+        crm: doctor.crm,
+        crm_state: doctor.crm_state,
+        name: doctor.name,
+        email: doctor.email
+      }
+    end.to_json
   end
 
   run! if app_file == $0
