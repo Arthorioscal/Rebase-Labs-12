@@ -1,12 +1,14 @@
 source 'http://rubygems.org'
 
+gem 'byebug'
 gem 'csv'
+gem 'dotenv'
+gem 'json'
 gem 'pg'
 gem 'puma'
 gem 'rack'
 gem 'rackup'
 gem 'sinatra'
-gem 'json'
 
 group :test do
   gem 'rack-test'
