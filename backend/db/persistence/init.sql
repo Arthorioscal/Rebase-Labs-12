@@ -1,5 +1,3 @@
-CREATE DATABASE rebaselabs;
-
 -- Doctors
 CREATE TABLE IF NOT EXISTS doctors (
     crm VARCHAR(10) PRIMARY KEY,

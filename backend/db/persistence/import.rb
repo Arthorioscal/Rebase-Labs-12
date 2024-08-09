@@ -9,7 +9,7 @@ conn = PG.connect(
   port: '5432'
 )
 
-CSV.foreach('backend/db/persistence/data.csv', headers: true, col_sep: ';') do |row|
+CSV.foreach('./data.csv', headers: true, col_sep: ';') do |row|
   conn.exec_params(
     'INSERT INTO doctors (crm, crm_state, name, email) VALUES ($1, $2, $3, $4) ON CONFLICT (crm) DO NOTHING',
     [row['crm médico'], row['crm médico estado'], row['nome médico'], row['email médico']]

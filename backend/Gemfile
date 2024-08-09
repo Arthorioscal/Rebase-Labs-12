@@ -6,3 +6,9 @@ gem 'puma'
 gem 'rack'
 gem 'rackup'
 gem 'sinatra'
+gem 'json'
+
+group :test do
+  gem 'rack-test'
+  gem 'rspec'
+end
