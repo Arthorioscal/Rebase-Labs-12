@@ -8,3 +8,25 @@ services:
     ports:
       - "5432:5432"
     volumes:
+      - db_data:/var/lib/postgresql/data
+      - ./backend/db/persistence/init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U user"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  app:
+    build:
+      context: ./backend
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DATABASE_HOST: postgres
+      DATABASE_USER: user
+      DATABASE_PASSWORD: pass
+      DATABASE_NAME: postgres
+
+volumes:
+  db_data:
