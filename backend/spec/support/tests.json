@@ -1,0 +1,85 @@
+[
+   {
+     "result_token": "T9O6AI",
+     "result_date": "2021-11-21",
+     "patient": {
+       "cpf": "066.126.400-90",
+       "name": "Matheus Barroso",
+       "email": "maricela@streich.com",
+       "birth_date": "1972-03-09"
+     },
+     "doctor": {
+       "crm": "B000B7CDX4",
+       "crm_state": "SP",
+       "name": "Sra. Calebe Louzada",
+       "email": "calebe@email.com"
+     },
+     "test_results": [
+       {
+         "type": "hemácias",
+         "limits": "45-52",
+         "result": "48"
+       },
+       {
+         "type": "leucócitos",
+         "limits": "9-61",
+         "result": "75"
+       },
+       {
+         "type": "plaquetas",
+         "limits": "11-93",
+         "result": "67"
+       },
+       {
+         "type": "hdl",
+         "limits": "19-75",
+         "result": "3"
+       },
+       {
+         "type": "ldl",
+         "limits": "45-54",
+         "result": "27"
+       },
+       {
+         "type": "vldl",
+         "limits": "48-72",
+         "result": "27"
+       },
+       {
+         "type": "glicemia",
+         "limits": "25-83",
+         "result": "78"
+       },
+       {
+         "type": "tgo",
+         "limits": "50-84",
+         "result": "15"
+       },
+       {
+         "type": "tgp",
+         "limits": "38-63",
+         "result": "34"
+       },
+       {
+         "type": "eletrólitos",
+         "limits": "2-68",
+         "result": "92"
+       },
+       {
+         "type": "tsh",
+         "limits": "25-80",
+         "result": "21"
+       },
+       {
+         "type": "t4-livre",
+         "limits": "34-60",
+         "result": "95"
+       },
+       {
+         "type": "ácido úrico",
+         "limits": "15-61",
+         "result": "10"
+       }
+     ]
+   }
+ ]
