@@ -2,7 +2,6 @@ source 'http://rubygems.org'
 
 gem 'byebug'
 gem 'csv'
-gem 'dotenv'
 gem 'json'
 gem 'pg'
 gem 'puma'
@@ -13,4 +12,5 @@ gem 'sinatra'
 group :test do
   gem 'rack-test'
   gem 'rspec'
+  gem 'database_cleaner'
 end
