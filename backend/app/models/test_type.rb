@@ -13,6 +13,20 @@ class TestType
     @test_id = test_id
   end
 
+  def self.create(id:, type:, limits:, result:, test_id:)
+    conn = DatabaseConnection.db_connection
+    sql = 'INSERT INTO test_types (id, type, limits, result, test_id) VALUES ($1, $2, $3, $4, $5) RETURNING id, type, limits, result, test_id'
+    result = conn.exec_params(sql, [id, type, limits, result, test_id])
+    test_type_data = result.first
+    TestType.new(
+      id: test_type_data['id'],
+      type: test_type_data['type'],
+      limits: test_type_data['limits'],
+      result: test_type_data['result'],
+      test_id: test_type_data['test_id']
+    )
+  end
+
   def self.all
     conn = DatabaseConnection.db_connection
     test_types = conn.exec('SELECT * FROM test_types')

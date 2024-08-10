@@ -13,20 +13,19 @@ require_relative '../app/models/test_type'
 
 ENV['RACK_ENV'] = 'test'
 
-# Establish a connection to the PostgreSQL database
 DB_CONNECTION = PG.connect(
   host: 'postgres',
   dbname: ENV['DATABASE_NAME'] || 'test_rebaselabs',
   user: 'user',
   password: 'pass'
 )
+DB_CONNECTION.exec("SET client_min_messages TO WARNING;")
 
 load File.expand_path('../../Rakefile', __FILE__)
 
 def truncate_tables(connection)
   tables = connection.exec("SELECT tablename FROM pg_tables WHERE schemaname = 'public';")
   tables.each do |table|
-    puts "Truncating table #{table['tablename']}..."
     connection.exec("TRUNCATE TABLE #{table['tablename']} RESTART IDENTITY CASCADE;")
   end
 end
@@ -48,13 +47,14 @@ RSpec.configure do |config|
   end
 
   config.around(:each) do |example|
-    puts "Truncating tables before example..."
     truncate_tables(DB_CONNECTION)
     example.run
-    puts "Example finished."
   end
 
   config.after(:suite) do
+    puts ''
+    puts "Closing database connections..."
+    DB_CONNECTION.exec("SELECT pg_terminate_backend(pg_stat_activity.pid) FROM pg_stat_activity WHERE pg_stat_activity.datname = 'test_rebaselabs' AND pid <> pg_backend_pid();")
     DB_CONNECTION.close
     puts "Dropping test database..."
     Rake::Task['db:drop_test'].invoke

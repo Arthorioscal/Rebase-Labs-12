@@ -12,6 +12,19 @@ class Doctor
     @email = email
   end
 
+  def self.create(crm:, crm_state:, name:, email:)
+    conn = DatabaseConnection.db_connection
+    sql = 'INSERT INTO doctors (crm, crm_state, name, email) VALUES ($1, $2, $3, $4) RETURNING crm, crm_state, name, email'
+    result = conn.exec_params(sql, [crm, crm_state, name, email]).first
+
+    Doctor.new(
+      crm: result['crm'],
+      crm_state: result['crm_state'],
+      name: result['name'],
+      email: result['email']
+    )
+  end
+
   def self.all
     conn = DatabaseConnection.db_connection
     doctors = conn.exec('SELECT * FROM doctors')

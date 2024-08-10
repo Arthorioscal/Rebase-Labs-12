@@ -8,7 +8,7 @@ namespace :db do
         host: 'postgres',
         user: 'user',
         password: 'pass',
-        dbname: 'postgres' # Connect to the default 'postgres' database to create the target one
+        dbname: 'postgres'
       )
       conn.exec("CREATE DATABASE test_rebaselabs;")
       conn.close
@@ -24,7 +24,7 @@ namespace :db do
         host: 'postgres',
         user: 'user',
         password: 'pass',
-        dbname: 'postgres' # Connect to the default 'postgres' database to drop the target one
+        dbname: 'postgres'
       )
       conn.exec("DROP DATABASE IF EXISTS test_rebaselabs;")
       conn.close
@@ -38,20 +38,16 @@ end
 desc 'Run specs'
 task spec: ['db:create_test'] do
   begin
-    # Ensure the test database is used
     ENV['DATABASE_NAME'] = 'test_rebaselabs'
 
-    # Your spec task implementation
     Rake::Task['spec:run'].invoke
   ensure
-    # Drop the test database after running the tests
     Rake::Task['db:drop_test'].invoke
   end
 end
 
 namespace :spec do
   task :run do
-    # Run your test suite here, e.g., using RSpec
     sh 'rspec'
   end
 end
