@@ -29,7 +29,7 @@ class Patient
       address: patient_data['address'],
       city: patient_data['city'],
       state: patient_data['state'],
-      doctor_crm: patient_data['doctor_crm']
+      doctor_crm: patient_data['doctor_crm'].strip
     )
   end
 

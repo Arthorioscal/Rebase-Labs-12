@@ -13,6 +13,17 @@ RSpec.describe Doctor do
     end
   end
 
+  describe '.create' do
+    it 'creates a new doctor' do
+      Doctor.create(crm: '12345', crm_state: 'SP', name: 'Dr. Solid Snake', email: 'solid.snake@mgs.com')
+
+      doctor = Doctor.find('12345')
+
+      expect(doctor).not_to be_nil
+      expect(doctor.name).to eq('Dr. Solid Snake')
+    end
+  end
+
   describe '.all' do
     it 'retrieves all doctors from the database' do
       Doctor.create(crm: '12345', crm_state: 'SP', name: 'Dr. Solid Snake', email: 'solid.snake@mgs.com')
@@ -22,6 +33,12 @@ RSpec.describe Doctor do
 
       expect(doctors.length).to eq(2)
       expect(doctors.map(&:name)).to include('Dr. Solid Snake', 'Dr. Big Boss')
+    end
+
+    it 'returns an empty array if there are no doctors' do
+      doctors = Doctor.all
+
+      expect(doctors).to be_empty
     end
   end
 
