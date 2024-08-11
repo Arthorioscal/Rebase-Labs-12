@@ -29,12 +29,14 @@ RSpec.describe Test do
       Doctor.create(crm: 'CRM123', crm_state: 'SP', name: 'Dr. Naomi Hunter', email: 'naomi.hunter@foxhound.com')
       Patient.create(cpf: '12345678901', name: 'Solid Snake', email: 'solid.snake@foxhound.com',
                      birth_date: '1972-01-01', address: 'Outer Heaven', city: 'Zanzibar Land', state: 'Zanzibar', doctor_crm: 'CRM123')
-      Test.create(id: 1, token: 'abc123', result_date: '2023-01-01', patient_cpf: '12345678901', doctor_crm: 'CRM123')
-
-      test = Test.find(1)
+      test = Test.create(id: 1, token: 'abc123', result_date: '2023-01-01', patient_cpf: '12345678901',
+                         doctor_crm: 'CRM123')
 
       expect(test).not_to be_nil
       expect(test.token).to eq('abc123')
+      expect(test.result_date).to eq('2023-01-01')
+      expect(test.patient_cpf).to eq('12345678901')
+      expect(test.doctor_crm).to eq('CRM123')
     end
   end
 

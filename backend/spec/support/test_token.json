@@ -12,13 +12,13 @@
   },
   "tests":[
      {
-        "type":"hemácias",
-        "limits":"45-52",
+        "test_type":"hemácias",
+        "test_limits":"45-52",
         "result":"48"
      },
      {
-        "type":"leucócitos",
-        "limits":"9-61",
+        "test_type":"leucócitos",
+        "test_limits":"9-61",
         "result":"75"
      },
      {
