@@ -88,5 +88,14 @@ RSpec.describe Controller do
       expect(actual_response).to eq(expected_response)
     end
   end
-end
 
+  describe '/import' do
+    it 'successfully imports a CSV file' do
+      post '/import'
+
+      expect(last_response).to be_ok
+      actual_response = JSON.parse(last_response.body)
+      expect(actual_response['message']).to eq('Data imported successfully')
+    end
+  end
+end

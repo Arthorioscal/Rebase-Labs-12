@@ -3,11 +3,12 @@
 require 'sinatra/base'
 require 'pg'
 require 'json'
-require_relative '../../lib/database_connection'
 require_relative '../models/doctor'
 require_relative '../models/patient'
 require_relative '../models/test'
 require_relative '../models/test_type'
+require_relative '../../db/persistence/import'
+require_relative '../../lib/database_connection'
 
 class Controller < Sinatra::Base
   get '/' do
@@ -69,6 +70,15 @@ class Controller < Sinatra::Base
         }
       end
     }.to_json
+  end
+
+  post '/import' do
+    import_data
+    status 200
+    { message: 'Data imported successfully' }.to_json
+  rescue StandardError => e
+    status 500
+    { error: e.message }.to_json
   end
 
   run! if app_file == $0
