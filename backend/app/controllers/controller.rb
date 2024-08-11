@@ -16,34 +16,58 @@ class Controller < Sinatra::Base
 
   get '/tests' do
     content_type :json
-  
+
     tests = Test.all.map do |test|
       {
         result_token: test.token,
         result_date: test.result_date,
-        patient: {
-          cpf: test.patient[:cpf],
-          name: test.patient[:name],
-          email: test.patient[:email],
-          birth_date: test.patient[:birth_date]
-        },
+        cpf: test.patient[:cpf],
+        name: test.patient[:name],
+        email: test.patient[:email],
+        birthday: test.patient[:birth_date],
         doctor: {
           crm: test.doctor[:crm],
           crm_state: test.doctor[:crm_state],
-          name: test.doctor[:name],
-          email: test.doctor[:email]
+          name: test.doctor[:name]
         },
-        test_results: test.test_results.map do |result|
+        tests: test.test_results.map do |result|
           {
-            type: result.type,
-            limits: result.limits,
+            test_type: result.type,
+            test_limits: result.limits,
             result: result.result
           }
         end
       }
     end
-  
+
     tests.to_json
+  end
+
+  get '/tests/:token' do
+    content_type :json
+
+    test = Test.find_by_token(params[:token])
+
+    {
+      result_token: test.token,
+      result_date: test.result_date,
+      cpf: test.patient[:cpf],
+      name: test.patient[:name],
+      email: test.patient[:email],
+      birthday: test.patient[:birth_date],
+      doctor: {
+        crm: test.doctor[:crm],
+        crm_state: test.doctor[:crm_state],
+        name: test.doctor[:name]
+      },
+      tests: test.test_results.map do |result|
+        {
+          test_type: result.type,
+          test_limits: result.limits,
+          result: result.result
+        }
+      end
+    }.to_json
   end
 
   run! if app_file == $0
