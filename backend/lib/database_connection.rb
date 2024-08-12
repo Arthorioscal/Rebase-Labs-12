@@ -8,15 +8,14 @@ module DatabaseConnection
 
     if env == 'test'
       PG.connect(
-        host: ENV['TEST_DATABASE_HOST'] || 'localhost',
-        port: ENV['TEST_DATABASE_PORT'] || 5432,
+        host: ENV['TEST_DATABASE_HOST'] || 'postgres',
         user: ENV['TEST_DATABASE_USER'] || 'user',
         password: ENV['TEST_DATABASE_PASSWORD'] || 'pass',
         dbname: ENV['TEST_DATABASE_NAME'] || 'test_rebaselabs'
       )
     else
       PG.connect(
-        host: ENV['DATABASE_HOST'] || 'localhost',
+        host: ENV['DATABASE_HOST'] || 'postgres',
         port: ENV['DATABASE_PORT'] || 5432,
         user: ENV['DATABASE_USER'] || 'user',
         password: ENV['DATABASE_PASSWORD'] || 'pass',

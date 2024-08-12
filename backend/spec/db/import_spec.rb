@@ -12,6 +12,6 @@
 #     result_tests = DB_CONNECTION.exec('SELECT * FROM tests;')
 #     expect(result_tests.ntuples).to eq(300)
 #     result_test_types = DB_CONNECTION.exec('SELECT * FROM test_types;')
-#     expect(result_test_types.ntuples).to eq(3900)
+    # expect(result_test_types.ntuples).to eq(3900)
 #   end
 # end
