@@ -13,5 +13,3 @@ COPY . .
 EXPOSE 4567
 
 CMD ["bundle", "exec", "puma", "-C", "config/puma.rb"]
-
-#CMD ["bundle", "exec", "rackup", "--host", "0.0.0.0", "--port", "4567", "config/config.ru"]

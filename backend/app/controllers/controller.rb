@@ -3,12 +3,15 @@
 require 'sinatra/base'
 require 'pg'
 require 'json'
+require 'sidekiq'
+require 'sidekiq/web'
 require_relative '../models/doctor'
 require_relative '../models/patient'
 require_relative '../models/test'
 require_relative '../models/test_type'
 require_relative '../../db/persistence/import'
 require_relative '../../lib/database_connection'
+require_relative '../../jobs/import_data_job'
 
 class Controller < Sinatra::Base
   get '/' do
@@ -73,10 +76,12 @@ class Controller < Sinatra::Base
   end
 
   post '/import' do
-    import_data
+    logger.info 'Received request to /import endpoint'
+    ImportDataJob.perform_async
     status 200
     { message: 'Data imported successfully' }.to_json
   rescue StandardError => e
+    logger.error "Error in /import endpoint: #{e.message}"
     status 500
     { error: e.message }.to_json
   end

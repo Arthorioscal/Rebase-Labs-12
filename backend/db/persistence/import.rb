@@ -37,9 +37,9 @@ def import_data
     end
   rescue StandardError => e
     puts e.message
+  ensure
+    conn.close if conn
   end
-
-  conn.close
 end
 
 import_data if $PROGRAM_NAME == __FILE__
