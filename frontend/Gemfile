@@ -1,0 +1,7 @@
+source 'http://rubygems.org'
+
+gem 'faraday'
+gem 'puma'
+gem 'rack'
+gem 'rackup'
+gem 'sinatra'
