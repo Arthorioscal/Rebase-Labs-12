@@ -44,6 +44,8 @@ GEM
     puma (6.4.2)
       nio4r (~> 2.0)
     rack (3.1.7)
+    rack-cors (2.0.2)
+      rack (>= 2.0.0)
     rack-protection (4.0.0)
       base64 (>= 0.1.0)
       rack (>= 3.0.0, < 4)
@@ -54,6 +56,8 @@ GEM
     rackup (2.1.0)
       rack (>= 3)
       webrick (~> 1.8)
+    redis (5.2.0)
+      redis-client (>= 0.22.0)
     redis-client (0.22.2)
       connection_pool
     rspec (3.13.0)
@@ -94,14 +98,17 @@ PLATFORMS
 
 DEPENDENCIES
   byebug
+  connection_pool
   csv
   database_cleaner
   json
   pg
   puma
   rack
+  rack-cors
   rack-test
   rackup
+  redis
   rspec
   sidekiq
   sinatra

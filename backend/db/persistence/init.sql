@@ -34,7 +34,8 @@ CREATE TABLE IF NOT EXISTS test_types (
     type VARCHAR(50) NOT NULL,
     limits VARCHAR(20) NOT NULL,
     result VARCHAR(20) NOT NULL,
-    test_id INT REFERENCES tests(id) ON DELETE CASCADE
+    test_id INT REFERENCES tests(id) ON DELETE CASCADE,
+    UNIQUE (type, test_id)
 );
 
 -- Indexes

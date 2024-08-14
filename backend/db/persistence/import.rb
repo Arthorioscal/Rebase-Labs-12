@@ -29,9 +29,8 @@ def import_data
         'INSERT INTO tests (token, result_date, patient_cpf, doctor_crm) VALUES ($1, $2, $3, $4) ON CONFLICT (token) DO NOTHING',
         [row['token resultado exame'], row['data exame'], row['cpf'], row['crm médico']]
       )
-
       conn.exec_params(
-        'INSERT INTO test_types (type, limits, result, test_id) VALUES ($1, $2, $3, (SELECT id FROM tests WHERE token = $4))',
+        'INSERT INTO test_types (type, limits, result, test_id) VALUES ($1, $2, $3, (SELECT id FROM tests WHERE token = $4)) ON CONFLICT (type, test_id) DO NOTHING',
         [row['tipo exame'], row['limites tipo exame'], row['resultado tipo exame'], row['token resultado exame']]
       )
     end

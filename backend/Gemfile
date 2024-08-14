@@ -1,17 +1,20 @@
 source 'http://rubygems.org'
 
 gem 'byebug'
+gem 'connection_pool'
 gem 'csv'
 gem 'json'
 gem 'pg'
 gem 'puma'
 gem 'rack'
+gem 'rack-cors'
 gem 'rackup'
+gem 'redis'
 gem 'sidekiq'
 gem 'sinatra'
 
 group :test do
+  gem 'database_cleaner'
   gem 'rack-test'
   gem 'rspec'
-  gem 'database_cleaner'
 end

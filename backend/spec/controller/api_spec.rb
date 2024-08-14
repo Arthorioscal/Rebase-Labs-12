@@ -1,10 +1,8 @@
 require 'spec_helper'
-require 'rack/test'
 require_relative '../../app/controllers/controller'
+Sidekiq::Testing.fake!
 
-RSpec.describe Controller do
-  include Rack::Test::Methods
-
+RSpec.describe Controller, type: :request do
   def app
     Controller.new
   end
@@ -96,6 +94,7 @@ RSpec.describe Controller do
       expect(last_response).to be_ok
       actual_response = JSON.parse(last_response.body)
       expect(actual_response['message']).to eq('Data imported successfully')
+      expect(Sidekiq::Worker.jobs.size).to eq(1)
     end
   end
 end

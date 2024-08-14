@@ -1,7 +1,16 @@
 source 'http://rubygems.org'
 
+gem 'byebug'
 gem 'faraday'
 gem 'puma'
 gem 'rack'
+gem 'rack-cors'
 gem 'rackup'
 gem 'sinatra'
+
+group :test do
+  gem 'capybara'
+  gem 'rack-test'
+  gem 'rspec'
+  gem 'selenium-webdriver'
+end
