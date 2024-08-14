@@ -29,7 +29,14 @@ class App < Sinatra::Base
     backend_url = ENV['BACKEND_URL'] || 'http://localhost:4567'
     response = Faraday.post("#{backend_url}/import")
 
-    response.body.to_json
+    result = if response.success?
+               { message: 'Data imported successfully' }
+             else
+               { message: 'Failed to import data' }
+             end
+
+    puts "Import response: #{result.to_json}" # Log the response for debugging
+    result.to_json
   end
 
   get '/' do

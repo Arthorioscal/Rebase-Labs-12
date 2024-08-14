@@ -9,6 +9,7 @@ gem 'rack'
 gem 'rack-cors'
 gem 'rackup'
 gem 'sinatra'
+gem 'webdrivers'
 
 group :test do
   gem 'capybara'

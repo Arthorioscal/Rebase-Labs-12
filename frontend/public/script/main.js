@@ -1,31 +1,28 @@
+import { fetch_exams, fetch_exams_token, import_button } from './api.js';
+
 document.addEventListener('DOMContentLoaded', () => {
-  fetch('/exams')
-    .then(response => response.json())
-    .then(data => {
-      const container = document.getElementById('exams-container');
-      data.forEach(exam => {
-        const examDiv = document.createElement('div');
-        examDiv.className = 'exam';
-        examDiv.innerHTML = `
-          <h2>${exam.name}</h2>
-          <p>CPF: ${exam.cpf}</p>
-          <p>Email: ${exam.email}</p>
-          <p>Data de Nascimento: ${exam.birthday}</p>
-          <p>Data do Resultado: ${exam.result_date}</p>
-          <h3>Médico</h3>
-          <p>Nome: ${exam.doctor.name}</p>
-          <p>CRM: ${exam.doctor.crm} - ${exam.doctor.crm_state}</p>
-          <h3>Resultados dos Exames</h3>
-          ${exam.tests.map(result => `
-            <div class="result">
-              <p>Tipo: ${result.test_type}</p>
-              <p>Limites: ${result.test_limits}</p>
-              <p>Resultado: ${result.result}</p>
-            </div>
-          `).join('')}
-        `;
-        container.appendChild(examDiv);
-      });
-    })
-    .catch(error => console.error('Erro ao buscar exames:', error));
+  const searchButton = document.getElementById('search-button');
+  const searchInput = document.getElementById('search-input');
+  const importButton = document.getElementById('import-button');
+
+  searchButton.addEventListener('click', () => {
+    const token = searchInput.value.trim();
+    const container = document.getElementById('exams-container');
+    container.innerHTML = ''; // Limpa o contêiner antes de exibir os resultados da busca
+
+    if (token) {
+      console.log('Fetching exam with token:', token);
+      fetch_exams_token(token);
+    } else {
+      alert('Please enter a valid token');
+    }
+  });
+
+  // Fetch all exams on page load
+  console.log('Fetching all exams on page load');
+  fetch_exams();
+
+  // Initialize import button functionality
+  console.log('Initializing import button');
+  import_button();
 });

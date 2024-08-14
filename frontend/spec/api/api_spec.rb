@@ -35,7 +35,7 @@ RSpec.describe 'API', type: :request do
 
       expect(last_response).to be_ok
       actual_response = JSON.parse(last_response.body)
-      expect(actual_response).to include('Data imported successfully')
+      expect(actual_response['message']).to eq('Data imported successfully')
     end
   end
 end
