@@ -23,6 +23,15 @@ class App < Sinatra::Base
     exam.to_json
   end
 
+  post '/import' do
+    content_type :json
+
+    backend_url = ENV['BACKEND_URL'] || 'http://localhost:4567'
+    response = Faraday.post("#{backend_url}/import")
+
+    response.body.to_json
+  end
+
   get '/' do
     content_type :html
     File.read(File.join('public', 'views', 'index.html'))

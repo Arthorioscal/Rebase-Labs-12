@@ -2,6 +2,8 @@ source 'http://rubygems.org'
 
 gem 'byebug'
 gem 'faraday'
+gem 'logger'
+gem 'pg'
 gem 'puma'
 gem 'rack'
 gem 'rack-cors'

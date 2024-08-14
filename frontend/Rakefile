@@ -1,0 +1,53 @@
+require 'pg'
+require 'rake'
+
+namespace :db do
+  task :create_test do
+    begin
+      conn = PG.connect(
+        host: 'postgres',
+        user: 'user',
+        password: 'pass',
+        dbname: 'postgres'
+      )
+      conn.exec("CREATE DATABASE test_rebaselabs;")
+      conn.close
+      puts "Database 'test_rebaselabs' created."
+    rescue PG::DuplicateDatabase
+      puts "Database 'test_rebaselabs' already exists, skipping creation."
+    end
+  end
+
+  task :drop_test do
+    begin
+      conn = PG.connect(
+        host: 'postgres',
+        user: 'user',
+        password: 'pass',
+        dbname: 'postgres'
+      )
+      conn.exec("DROP DATABASE IF EXISTS test_rebaselabs;")
+      conn.close
+      puts "Database 'test_rebaselabs' dropped."
+    rescue PG::UndefinedDatabase
+      puts "Database 'test_rebaselabs' does not exist, skipping drop."
+    end
+  end
+end
+
+desc 'Run specs'
+task spec: ['db:create_test'] do
+  begin
+    ENV['DATABASE_NAME'] = 'test_rebaselabs'
+
+    Rake::Task['spec:run'].invoke
+  ensure
+    Rake::Task['db:drop_test'].invoke
+  end
+end
+
+namespace :spec do
+  task :run do
+    sh 'rspec'
+  end
+end
