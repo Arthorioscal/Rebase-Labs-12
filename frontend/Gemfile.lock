@@ -38,6 +38,8 @@ GEM
     rack (3.1.7)
     rack-cors (2.0.2)
       rack (>= 2.0.0)
+    rack-flash3 (1.0.5)
+      rack
     rack-protection (4.0.0)
       base64 (>= 0.1.0)
       rack (>= 3.0.0, < 4)
@@ -103,6 +105,7 @@ DEPENDENCIES
   puma
   rack
   rack-cors
+  rack-flash3
   rack-test
   rackup
   rspec

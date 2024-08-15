@@ -5,19 +5,61 @@ document.addEventListener('DOMContentLoaded', () => {
   const searchInput = document.getElementById('search-input');
   const searchButton = document.getElementById('search-button');
   const importButton = document.getElementById('import-button');
+  const errorContainer = document.getElementById('error-container'); // Container for error card
+
+  const createCardWithMessage = (message) => {
+    const card = document.createElement('div');
+    card.className = 'card text-center w-90 mx-auto mt-3';
+
+    const cardBody = document.createElement('div');
+    cardBody.className = 'card-body p-1';
+
+    const messageElement = document.createElement('p');
+    messageElement.className = 'card-text';
+    messageElement.textContent = message;
+    cardBody.appendChild(messageElement);
+
+    const backButton = document.createElement('button');
+    backButton.className = 'btn btn-primary';
+    backButton.textContent = 'Retornar';
+    backButton.addEventListener('click', () => {
+      window.location.href = '/';
+    });
+    cardBody.appendChild(backButton);
+
+    card.appendChild(cardBody);
+    return card;
+  };
 
   const handleSearch = (event) => {
-    event.preventDefault(); // Prevent the form from submitting and reloading the page
+    event.preventDefault();
     console.log('Form submission prevented');
     const token = searchInput.value.trim();
     const container = document.getElementById('exams-container');
-    container.innerHTML = ''; // Clear the container before displaying the search results
+    const messageContainer = document.getElementById('message-container');
+    
+    if (container) container.innerHTML = '';
+    if (messageContainer) messageContainer.innerHTML = '';
+    if (errorContainer) errorContainer.innerHTML = ''; // Clear previous error card
 
     if (token) {
-      console.log('Fetching exam with token:', token);
-      fetch_exams_token(token);
+      fetch_exams_token(token)
+        .then((exams) => {
+          console.log('Exams fetched successfully');
+          if (container) {
+            exams.forEach(exam => {
+              const examElement = document.createElement('div');
+              examElement.textContent = exam.name;
+              container.appendChild(examElement);
+            });
+          }
+        })
     } else {
-      alert('Please enter a valid token');
+      const message = 'Por favor, insira um token válido';
+      if (errorContainer) {
+        const card = createCardWithMessage(message);
+        errorContainer.appendChild(card);
+      }
     }
   };
 
@@ -26,17 +68,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
   searchInput.addEventListener('keypress', (event) => {
     if (event.key === 'Enter') {
-      console.log('Enter key pressed');
-      event.preventDefault(); // Prevent the default action of the Enter key
+      event.preventDefault();
       handleSearch(event);
     }
   });
 
-  // Fetch all exams on page load
   console.log('Fetching all exams on page load');
   fetch_exams();
 
-  // Initialize import button functionality
   console.log('Initializing import button');
   import_button();
 });

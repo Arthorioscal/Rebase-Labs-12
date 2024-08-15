@@ -30,9 +30,9 @@ class App < Sinatra::Base
     response = Faraday.post("#{backend_url}/import")
 
     result = if response.success?
-               { message: 'Data imported successfully' }
+               { message: 'Importando Dados, aguarde um momento.' }
              else
-               { message: 'Failed to import data' }
+               { message: 'Erro ao importar dados.' }
              end
 
     puts "Import response: #{result.to_json}" # Log the response for debugging
