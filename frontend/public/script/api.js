@@ -1,5 +1,6 @@
 import { createCard } from './card.js';
 import { displayExamDetails } from './details.js';
+import { allExams, currentPage, displayPage } from './pagination.js';
 
 export function fetch_exams() {
   console.log('fetch_exams called');
@@ -12,20 +13,9 @@ export function fetch_exams() {
     })
     .then(data => {
       console.log('Exams data:', data);
-
-      // Clear the container before appending new data
-      const container = document.getElementById('exams-container');
-      container.innerHTML = ''; // Clear previous content
-
-      const rowDiv = document.createElement('div');
-      rowDiv.className = 'row';
-
-      data.forEach(exam => {
-        createCard(exam, rowDiv, container);
-      }); // <-- Missing closing parenthesis here
-
-      // Append the row div to the container
-      container.appendChild(rowDiv);
+      allExams.length = 0;
+      allExams.push(...data);
+      displayPage(currentPage);
     })
     .catch(error => {
       console.error('Fetch error:', error);
