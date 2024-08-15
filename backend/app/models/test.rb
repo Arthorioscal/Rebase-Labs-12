@@ -9,12 +9,80 @@ require 'redis'
 class Test
   attr_reader :id, :token, :result_date, :patient_cpf, :doctor_crm, :patient, :doctor, :test_results
 
-  def initialize(id:, token:, result_date:, patient_cpf:, doctor_crm:)
+  def initialize(id:, token:, result_date:, patient_cpf:, doctor_crm:, patient: nil, doctor: nil, test_results: [])
     @id = id
     @token = token
     @result_date = result_date
     @patient_cpf = patient_cpf
     @doctor_crm = doctor_crm
+    @patient = patient
+    @doctor = doctor
+    @test_results = test_results
+  end
+
+  def self.create(id:, token:, result_date:, patient_cpf:, doctor_crm:)
+    conn = DatabaseConnection.db_connection
+    sql = 'INSERT INTO tests (id, token, result_date, patient_cpf, doctor_crm) VALUES ($1, $2, $3, $4, $5) RETURNING id, token, result_date, patient_cpf, doctor_crm'
+    result = conn.exec_params(sql, [id, token, result_date, patient_cpf, doctor_crm])
+    test_data = result.first
+    new(
+      id: test_data['id'],
+      token: test_data['token'],
+      result_date: test_data['result_date'],
+      patient_cpf: test_data['patient_cpf'],
+      doctor_crm: test_data['doctor_crm']
+    )
+  end
+
+  def self.all
+    database_tests = fetch_tests_from_database_or_other_source
+    puts "Database tests count: #{database_tests.count}" # Debugging statement
+
+    tests_data = fetch_from_cache('all_tests')
+    puts "Tests data count: #{tests_data ? tests_data.count : 0}" # Debugging statement
+
+    # Loop until the counts are equal
+    if tests_data.nil? || tests_data.count != database_tests.count
+      tests_data = fetch_tests_from_database_or_other_source
+      puts "Fetching from database again. Tests data count: #{tests_data.count}" # Debugging statement
+    end
+
+    tests = parse_tests_data(tests_data)
+    cache_tests('all_tests', tests_data)
+    tests
+  end
+
+  def self.find_by_token(token)
+    cache_key = "test_#{token}"
+
+    # Fetch all test data and cache it
+    all_tests_data = fetch_all_tests_data_from_database
+    all_tests_data.each do |test_data|
+      cache_key = "test_#{test_data['token']}"
+      cache_tests(cache_key, test_data)
+    end
+    puts 'All test data cached' # Debugging statement
+
+    # Fetch from cache
+    test_data = fetch_from_cache(cache_key)
+    puts "Cache fetch for #{cache_key}: #{test_data ? 'hit' : 'miss'}" # Debugging statement
+
+    return unless test_data
+
+    # Parse the test data
+    parse_tests_data([test_data]).first
+  end
+
+  def test_results
+    @test_results.map do |result|
+      TestType.new(
+        id: result[:id],
+        type: result[:type],
+        limits: result[:limits],
+        result: result[:result],
+        test_id: id
+      )
+    end
   end
 
   def self.fetch_tests_from_database_or_other_source
@@ -31,6 +99,47 @@ class Test
     SQL
 
     result = conn.exec(sql)
+    group_tests(result)
+  end
+
+  def self.fetch_all_tests_data_from_database
+    conn = DatabaseConnection.db_connection
+
+    # Fetch all test records
+    tests_sql = 'SELECT * FROM tests'
+    tests_result = conn.exec(tests_sql)
+
+    # Fetch all patient records
+    patients_sql = 'SELECT * FROM patients'
+    patients_result = conn.exec(patients_sql).to_a
+
+    # Fetch all doctor records
+    doctors_sql = 'SELECT * FROM doctors'
+    doctors_result = conn.exec(doctors_sql).to_a
+
+    # Fetch all test types
+    test_types_sql = 'SELECT * FROM test_types'
+    test_types_result = conn.exec(test_types_sql).to_a
+
+    # Convert results to hash for easy lookup
+    patients_hash = patients_result.each_with_object({}) { |patient, hash| hash[patient['cpf']] = patient }
+    doctors_hash = doctors_result.each_with_object({}) { |doctor, hash| hash[doctor['crm']] = doctor }
+    test_types_hash = test_types_result.group_by { |test_type| test_type['test_id'] }
+
+    # Combine the data
+    tests_result.map do |test|
+      {
+        id: test['id'],
+        token: test['token'],
+        result_date: test['result_date'],
+        patient: patients_hash[test['patient_cpf']],
+        doctor: doctors_hash[test['doctor_crm']],
+        test_results: test_types_hash[test['id']] || []
+      }
+    end
+  end
+
+  def self.group_tests(result)
     tests = {}
 
     result.each do |row|
@@ -67,150 +176,30 @@ class Test
     tests.values
   end
 
-  def self.create(id:, token:, result_date:, patient_cpf:, doctor_crm:)
-    conn = DatabaseConnection.db_connection
-    sql = 'INSERT INTO tests (id, token, result_date, patient_cpf, doctor_crm) VALUES ($1, $2, $3, $4, $5) RETURNING id, token, result_date, patient_cpf, doctor_crm'
-    result = conn.exec_params(sql, [id, token, result_date, patient_cpf, doctor_crm])
-    test_data = result.first
-    Test.new(
-      id: test_data['id'],
-      token: test_data['token'],
-      result_date: test_data['result_date'],
-      patient_cpf: test_data['patient_cpf'],
-      doctor_crm: test_data['doctor_crm']
-    )
+  def self.fetch_from_cache(cache_key)
+    cached_data = nil
+    $redis.with { |conn| cached_data = conn.get(cache_key) }
+    return unless cached_data && cached_data != '[]'
+
+    JSON.parse(cached_data, symbolize_names: true)
   end
 
-  def self.all
-    cache_key = 'all_tests'
-
-    cached_tests = nil
-    $redis.with { |conn| cached_tests = conn.get(cache_key) }
-
-    if cached_tests
-      puts "Cached tests found: #{cached_tests}" # Debugging statement
-      tests_data = JSON.parse(cached_tests, symbolize_names: true)
-      puts "Parsed tests data: #{tests_data}" # Debugging statement
-
-      tests = tests_data.map do |test_data|
-        next unless test_data.is_a?(Hash) # Ensure test_data is a hash
-
-        Test.new(
-          id: test_data[:id],
-          token: test_data[:token],
-          result_date: test_data[:result_date],
-          patient_cpf: test_data[:patient][:cpf],
-          doctor_crm: test_data[:doctor][:crm]
-        ).tap do |test|
-          test.instance_variable_set(:@patient, test_data[:patient])
-          test.instance_variable_set(:@doctor, test_data[:doctor])
-          test.instance_variable_set(:@test_results, test_data[:test_results])
-        end
-      end.compact
-    else
-      # Fetch tests from the database directly
-      tests = fetch_tests_from_database_or_other_source
-      puts "Fetched tests from database: #{tests}" # Debugging statement
-      tests_data = tests.map do |test|
-        {
-          id: test[:id],
-          token: test[:token],
-          result_date: test[:result_date],
-          patient: test[:patient],
-          doctor: test[:doctor],
-          test_results: test[:test_results]
-        }
-      end
-      $redis.with { |conn| conn.set(cache_key, tests_data.to_json) }
-      puts "Cached tests data: #{tests_data.to_json}" # Debugging statement
-    end
-
-    tests
+  def self.cache_tests(cache_key, data)
+    $redis.with { |conn| conn.set(cache_key, data.to_json) }
   end
 
-  def test_results
-    @test_results.map do |result|
-      TestType.new(
-        id: result[:id],
-        type: result[:type], # Accessing the type value from the Hash
-        limits: result[:limits],
-        result: result[:result],
-        test_id: id
-      )
-    end
-  end
-
-  def self.find_by_token(token)
-    cache_key = "test_#{token}"
-
-    cached_test = nil
-    $redis.with { |conn| cached_test = conn.get(cache_key) }
-    if cached_test
-      test_data = JSON.parse(cached_test, symbolize_names: true)
-      return Test.new(
+  def self.parse_tests_data(tests_data)
+    tests_data.map do |test_data|
+      new(
         id: test_data[:id],
         token: test_data[:token],
         result_date: test_data[:result_date],
         patient_cpf: test_data[:patient][:cpf],
-        doctor_crm: test_data[:doctor][:crm]
-      ).tap do |test|
-        test.instance_variable_set(:@patient, test_data[:patient])
-        test.instance_variable_set(:@doctor, test_data[:doctor])
-        test.instance_variable_set(:@test_results, test_data[:test_results])
-      end
-    end
-
-    conn = DatabaseConnection.db_connection
-
-    test_sql = 'SELECT * FROM tests WHERE token = $1'
-    test_result = conn.exec_params(test_sql, [token]).first
-    return nil unless test_result
-
-    patient_sql = 'SELECT * FROM patients WHERE cpf = $1'
-    patient_result = conn.exec_params(patient_sql, [test_result['patient_cpf']]).first
-
-    doctor_sql = 'SELECT * FROM doctors WHERE crm = $1'
-    doctor_result = conn.exec_params(doctor_sql, [test_result['doctor_crm']]).first
-
-    test_types_sql = 'SELECT * FROM test_types WHERE test_id = $1'
-    test_types_result = conn.exec_params(test_types_sql, [test_result['id']])
-
-    test_data = {
-      id: test_result['id'],
-      token: test_result['token'],
-      result_date: test_result['result_date'],
-      patient: {
-        cpf: patient_result['cpf'],
-        name: patient_result['name'],
-        email: patient_result['email'],
-        birth_date: patient_result['birth_date']
-      },
-      doctor: {
-        crm: doctor_result['crm'],
-        crm_state: doctor_result['crm_state'],
-        name: doctor_result['name']
-      },
-      test_results: test_types_result.map do |test_type|
-        {
-          id: test_type['id'],
-          type: test_type['type'],
-          limits: test_type['limits'],
-          result: test_type['result']
-        }
-      end
-    }
-
-    $redis.with { |conn| conn.set(cache_key, test_data.to_json) }
-    Test.new(
-      id: test_data[:id],
-      token: test_data[:token],
-      result_date: test_data[:result_date],
-      patient_cpf: test_data[:patient][:cpf],
-      doctor_crm: test_data[:doctor][:crm]
-    ).tap do |test|
-      test.instance_variable_set(:@patient, test_data[:patient])
-      test.instance_variable_set(:@doctor, test_data[:doctor])
-      test.instance_variable_set(:@test_results, test_data[:test_results])
+        doctor_crm: test_data[:doctor][:crm],
+        patient: test_data[:patient],
+        doctor: test_data[:doctor],
+        test_results: test_data[:test_results]
+      )
     end
   end
 end

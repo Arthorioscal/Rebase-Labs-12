@@ -18,11 +18,14 @@ GEM
     faraday (2.10.1)
       faraday-net_http (>= 2.0, < 3.2)
       logger
+    faraday-multipart (1.0.4)
+      multipart-post (~> 2)
     faraday-net_http (3.1.1)
       net-http
     logger (1.6.0)
     matrix (0.4.2)
     mini_mime (1.1.5)
+    multipart-post (2.4.1)
     mustermann (3.0.2)
       ruby2_keywords (~> 0.0.1)
     net-http (0.4.1)
@@ -100,6 +103,7 @@ DEPENDENCIES
   byebug
   capybara
   faraday
+  faraday-multipart
   logger
   pg
   puma

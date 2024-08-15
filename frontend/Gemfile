@@ -2,6 +2,7 @@ source 'http://rubygems.org'
 
 gem 'byebug'
 gem 'faraday'
+gem 'faraday-multipart'
 gem 'logger'
 gem 'pg'
 gem 'puma'

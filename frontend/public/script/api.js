@@ -33,10 +33,12 @@ export async function fetch_exams_token(token) {
       throw new Error('Invalid exam data received');
     }
     displayExamDetails(exam, token);
+    return exam;
   } catch (error) {
     console.error('Fetch error:', error);
     // Optionally, you can add more user-friendly error handling here
     displayErrorMessage('Falha em buscar o exame. Verifique o token e tente novamente.');
+    throw error; // Re-throw the error to be caught in the calling function
   }
 }
 
@@ -61,23 +63,40 @@ function displayErrorMessage(message) {
 
 export function import_button() {
   const importButton = document.getElementById('import-button');
+  const fileInput = document.getElementById('file-input');
+
   importButton.addEventListener('click', () => {
-    fetch('/import', { method: 'POST' })
-      .then(response => {
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-        return response.json();
-      })
-      .then(data => {
-        console.log('Import response:', data);
-        if (data.message) {
-          alert(data.message);
-        } else {
-          alert('Import completed successfully');
-        }
-        location.reload();
-      })
-      .catch(error => console.error('Error in importing exams', error));
+    const file = fileInput.files[0];
+    if (!file) {
+      alert('Por favor, selecione um arquivo CSV para importar.');
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('file', file);
+
+    console.log('Sending file to /import endpoint');
+
+    fetch('/import', {
+      method: 'POST',
+      body: formData
+    })
+    .then(response => {
+      console.log('Received response from /import endpoint');
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      return response.json();
+    })
+    .then(data => {
+      console.log('Import response:', data);
+      if (data.message) {
+        alert(data.message);
+      } else {
+        alert('Import completed successfully');
+      }
+      location.reload();
+    })
+    .catch(error => console.error('Error in importing exams', error));
   });
 }

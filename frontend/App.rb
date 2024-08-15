@@ -1,6 +1,7 @@
 require 'sinatra/base'
 require 'json'
 require 'faraday'
+require 'faraday/multipart'
 
 class App < Sinatra::Base
   get '/exams' do
@@ -26,17 +27,34 @@ class App < Sinatra::Base
   post '/import' do
     content_type :json
 
-    backend_url = ENV['BACKEND_URL'] || 'http://localhost:4567'
-    response = Faraday.post("#{backend_url}/import")
+    if params[:file] && params[:file][:tempfile]
+      file = params[:file][:tempfile]
+      filename = params[:file][:filename]
+      backend_url = ENV['BACKEND_URL'] || 'http://localhost:4567'
 
-    result = if response.success?
-               { message: 'Importando Dados, aguarde um momento.' }
-             else
-               { message: 'Erro ao importar dados.' }
-             end
+      conn = Faraday.new do |f|
+        f.request :multipart
+        f.request :url_encoded
+        f.adapter Faraday.default_adapter
+      end
 
-    puts "Import response: #{result.to_json}" # Log the response for debugging
-    result.to_json
+      payload = {
+        file: Faraday::Multipart::FilePart.new(file, 'text/csv', filename)
+      }
+
+      response = conn.post("#{backend_url}/import", payload)
+
+      result = if response.success?
+                 { message: 'Importando Dados, aguarde um momento.' }
+               else
+                 { message: 'Erro ao importar dados.' }
+               end
+
+      puts "Import response: #{result.to_json}" # Log the response for debugging
+      result.to_json
+    else
+      { message: 'Nenhum arquivo foi enviado.' }.to_json
+    end
   end
 
   get '/' do

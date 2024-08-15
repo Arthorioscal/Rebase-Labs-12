@@ -74,14 +74,43 @@ class Controller < Sinatra::Base
   end
 
   post '/import' do
-    logger.info 'Received request to /import endpoint'
-    ImportDataJob.perform_async
-    status 200
-    { message: 'Data imported successfully' }.to_json
+    puts 'Received request to /import endpoint'
+
+    if params[:file]
+      puts "File param received: #{params[:file].inspect}"
+    else
+      puts 'No file param received'
+    end
+
+    if params[:file] && params[:file][:tempfile]
+      tempfile = params[:file][:tempfile]
+      filename = params[:file][:filename]
+      saved_file_path = "./#{filename}"
+
+      # Save the tempfile to a persistent location
+      File.open(saved_file_path, 'wb') do |file|
+        file.write(tempfile.read)
+      end
+
+      puts "File saved to: #{saved_file_path}"
+      begin
+        ImportDataJob.perform_async(saved_file_path)
+        status 200
+        { message: 'Data import started successfully' }.to_json
+      rescue StandardError => e
+        puts "Error starting import job: #{e.message}"
+        status 500
+        { message: 'Erro ao importar dados.' }.to_json
+      end
+    else
+      puts 'No file uploaded'
+      status 400
+      { message: 'No file uploaded' }.to_json
+    end
   rescue StandardError => e
-    logger.error "Error in /import endpoint: #{e.message}"
+    puts "Error in /import endpoint: #{e.message}"
     status 500
-    { error: e.message }.to_json
+    { message: 'Erro ao importar dados.' }.to_json
   end
 
   run! if app_file == $0
