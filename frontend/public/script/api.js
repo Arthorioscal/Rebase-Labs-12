@@ -1,3 +1,6 @@
+import { createCard } from './card.js';
+import { displayExamDetails } from './details.js';
+
 export function fetch_exams() {
   console.log('fetch_exams called');
   fetch('/exams')
@@ -9,33 +12,24 @@ export function fetch_exams() {
     })
     .then(data => {
       console.log('Exams data:', data);
+
+      // Clear the container before appending new data
       const container = document.getElementById('exams-container');
-      container.innerHTML = ''; // Limpa o contêiner antes de exibir os exames
+      container.innerHTML = ''; // Clear previous content
+
+      const rowDiv = document.createElement('div');
+      rowDiv.className = 'row';
+
       data.forEach(exam => {
-        const examDiv = document.createElement('div');
-        examDiv.className = 'exam';
-        examDiv.innerHTML = `
-          <h2>${exam.name}</h2>
-          <p>CPF: ${exam.cpf}</p>
-          <p>Email: ${exam.email}</p>
-          <p>Data de Nascimento: ${exam.birthday}</p>
-          <p>Data do Resultado: ${exam.result_date}</p>
-          <h3>Médico</h3>
-          <p>Nome: ${exam.doctor.name}</p>
-          <p>CRM: ${exam.doctor.crm} - ${exam.doctor.crm_state}</p>
-          <h3>Resultados dos Exames</h3>
-          ${exam.tests.map(result => `
-            <div class="result">
-              <p>Tipo: ${result.test_type}</p>
-              <p>Limites: ${result.test_limits}</p>
-              <p>Resultado: ${result.result}</p>
-            </div>
-          `).join('')}
-        `;
-        container.appendChild(examDiv);
-      });
+        createCard(exam, rowDiv, container);
+      }); // <-- Missing closing parenthesis here
+
+      // Append the row div to the container
+      container.appendChild(rowDiv);
     })
-    .catch(error => console.error('Error in listing exams', error));
+    .catch(error => {
+      console.error('Fetch error:', error);
+    });
 }
 
 export function fetch_exams_token(token) {
@@ -49,31 +43,11 @@ export function fetch_exams_token(token) {
     })
     .then(exam => {
       console.log('Exam data:', exam);
-      const container = document.getElementById('exams-container');
-      container.innerHTML = ''; // Limpa o contêiner antes de exibir o exame
-      const examDiv = document.createElement('div');
-      examDiv.className = 'exam';
-      examDiv.innerHTML = `
-        <h2>${exam.name}</h2>
-        <p>CPF: ${exam.cpf}</p>
-        <p>Email: ${exam.email}</p>
-        <p>Data de Nascimento: ${exam.birthday}</p>
-        <p>Data do Resultado: ${exam.result_date}</p>
-        <h3>Médico</h3>
-        <p>Nome: ${exam.doctor.name}</p>
-        <p>CRM: ${exam.doctor.crm} - ${exam.doctor.crm_state}</p>
-        <h3>Resultados dos Exames</h3>
-        ${exam.tests.map(result => `
-          <div class="result">
-            <p>Tipo: ${result.test_type}</p>
-            <p>Limites: ${result.test_limits}</p>
-            <p>Resultado: ${result.result}</p>
-          </div>
-        `).join('')}
-      `;
-      container.appendChild(examDiv);
+      displayExamDetails(exam, token);
     })
-    .catch(error => console.error('Error to find exam by token', error));
+    .catch(error => {
+      console.error('Fetch error:', error);
+    });
 }
 
 export function import_button() {
@@ -89,9 +63,9 @@ export function import_button() {
         return response.json();
       })
       .then(data => {
-        console.log('Import response:', data); // Adiciona depuração aqui
+        console.log('Import response:', data);
         if (data.message) {
-          alert(data.message); // Display the message from the server
+          alert(data.message);
         } else {
           alert('Import completed successfully');
         }

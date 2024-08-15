@@ -40,7 +40,7 @@ class App < Sinatra::Base
   end
 
   get '/' do
-    content_type :html
-    File.read(File.join('public', 'views', 'index.html'))
+    content_type 'text/html'
+    erb :'index.html', layout: :'layouts/application.html'
   end
 end
