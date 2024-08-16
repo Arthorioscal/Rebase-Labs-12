@@ -48,27 +48,27 @@ docker compose up
 
 É normal este comando levar um tempinho para concluir, no final ele deve abrir as portas no localhost:4567 ( backend) e localhost:3000 (frontend).
 
-## Gems Usadas:
+## Principais Gems Usadas:
 
-- **rack-cors**: Essa gem foi utilizada para permitir as requisições da API entre as 2 aplicações do frontend e backend. Ela fornece suporte para Compartilhamento de Recursos de Origem Cruzada (CORS) para aplicações web compatíveis com Rack.
+- **sinatra**: Framework Web bem minimalista que foi utilizado tanto para o frontend quanto o backend.
 
-- **puma**: 
+- **pg**: Gem para se conectar com o banco de dados Postgres
 
+- **rack**: Fornece uma interface entre web server e o framework web sinatra.
 
+- **puma**:  Servidor Web HTTP para lidar com as requisições
 
-## Gems usadas para realizar os testes:
+- **redis**: Banco de dados em memória, foi utilizado para o enfileiramento de processos assíncronos e cache
 
-- **debug**: Vem com o rails, faz a depuração de bugs para o Ruby. Versão: 1.9.2
+- **sidekiq**: Biblioteca para os backgroundjobs utilizada
 
-- **rspec-rails**: Framework de testes usado em todos os testes feitos durante o desenvolvimento. Versão: 6.1.2
+- **rspec**: Biblioteca de testes utilizada
 
-- **capybara**: Gem de teste onde ajuda a testar a aplicação web simulando um usuario real interagindo. Versão: 3.40.0
+- **faraday**: Biblioteca HTTP para o Ruby, fornecendo uma interface boa para as requisições HTTP entre frontend e backend
 
 ## Documentação da API:
 
-## Listagem de Endpoints
-
-## Listagem de Buffets
+## Listagem de Exames
 Este endpoint fornece uma listagem completa de buffets cadastrados na plataforma.
 
 **Endpoint**: `GET api/v1/buffets`
@@ -128,42 +128,62 @@ Retorna um array de objetos, onde cada objeto representa um buffet. Cada buffet 
 ]
 ```
 
-## Detalhes de um buffet
+## Detalhes de um Teste
 Fornece todos os detalhes de um buffet específico.
 
-**Endpoint**: `GET api/v1/buffets/:id`
+**Endpoint**: `GET tests/:token`
 
 #### Parâmetros Aceitos:
 
-- `id`: ID do Buffet.
+- `id`: Token do Teste desejado.
 
 #### Resposta:
 
-Retorna um objeto que representa o buffet, incluindo todas as suas informações, exceto CNPJ e razão social. A foto de capa é retornada como uma URL.
+Retorna um corpo em JSON contendo os detalhes daquele exame, como nome do paciente e médico, crm e etc...
 
 #### Exemplo de Resposta:
 
 ```json
-[
 {
-  "id": 1,
-  "brand_name": "Buffet do Big Boss",
-  "phone": "11999999922",
-  "email": "snakebuffets@buffets.com",
-  "address": "Rua do Buffet, 123",
-  "neighborhood": "Bairro do Buffet",
-  "state": "São Paulo",
-  "city": "São Paulo",
-  "zip_code": "05164105",
-  "description": "Buffet de mercenários, especializado em festas de aniversário e casamento",
-  "payment_methods": "Dinheiro, Pix, cartão de crédito e débito",
-  "user_id": 1,
-  "created_at": "2024-05-16T15:41:17.111-03:00",
-  "updated_at": "2024-05-16T15:41:17.508-03:00",
-  "active": true,
-  "cover_photo": "http://localhost:3000/rails/active_storage/blobs/redirect/eyJfcmFpbHMiOnsiZGF0YSI6MSwicHVyIjoiYmxvYl9pZCJ9fQ==--2a12a76251a4c4aef8c765bea75f10d3cfdbe1dd/cover_bigboss.png"
+  "result_token": "AIWH8Y",
+  "result_date": "2021-06-29",
+  "cpf": "071.488.453-78",
+  "name": "Antônio Rebouças",
+  "email": "adalberto_grady@feil.org",
+  "birthday": "1999-04-11",
+  "doctor": {
+    "crm": "B0002W2RBG",
+    "crm_state": "CE",
+    "name": "Dra. Isabelly Rêgo"
+  },
+  "tests": [
+    {
+      "test_type": "hemácias",
+      "test_limits": "45-52",
+      "result": "6"
+    },
+    {
+      "test_type": "vldl",
+      "test_limits": "48-72",
+      "result": "88"
+    },
+    {
+      "test_type": "eletrólitos",
+      "test_limits": "2-68",
+      "result": "66"
+    },
+    {
+      "test_type": "tsh",
+      "test_limits": "25-80",
+      "result": "59"
+    },
+    {
+      "test_type": "ácido úrico",
+      "test_limits": "15-61",
+      "result": "43"
+    }
+  ]
 }
-]
 ```
 
 ## Listagem de tipos de eventos de um buffet
