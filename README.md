@@ -21,15 +21,12 @@
 <p align="justify"> Listagem de Exames médicos, projeto em foco no aprendizado de Docker e conhecimentos mais crú de desenvolvimento Web, utilizando Sinatra. </p>
 
 ## O que a aplicação é capaz de fazer :checkered_flag:
-#### Tarefas referentes ao Dono de Buffet
 
+Basicamente, o sistema consiste em duas aplicações interdependentes. A primeira aplicação permite o upload de um arquivo CSV contendo os exames a serem importados. A segunda aplicação, que é o backend, processa e importa esses dados para o banco de dados. O sistema fornece uma listagem completa dos exames médicos, com um campo de busca e a possibilidade de clicar nos "cards" para exibir mais detalhes sobre cada exame.
 
-#### Visitantes
+## Objetivos desse Projeto
 
-
-#### Clientes
-
-
+Aprimorar o entendimento de aplicações Web e sua infraestrutura, explorando conceitos fundamentais como Docker, servidores web, processamento assíncrono, cache e requisições web. Utilizaremos o framework minimalista Sinatra para garantir que o processo seja realizado de forma manual, proporcionando um aprendizado mais profundo e prático.
 
 ## Pré-requesitos
 
@@ -67,64 +64,102 @@ docker compose up
 - **faraday**: Biblioteca HTTP para o Ruby, fornecendo uma interface boa para as requisições HTTP entre frontend e backend
 
 ## Documentação da API:
+A API está disponível na porta 4567, dentro do container de backend. As rotas são gerenciadas pelo `controller.rb` utilizando o framework Sinatra. As requisições ao banco de dados são feitas através do PostgreSQL (PG), e o Redis é utilizado para cache.
+
 
 ## Listagem de Exames
-Este endpoint fornece uma listagem completa de buffets cadastrados na plataforma.
+Este endpoint fornece uma listagem completa dos exames importados do arquivo CSV
 
-**Endpoint**: `GET api/v1/buffets`
-
-#### Parâmetros Aceitos:
-
-- `search` (opcional): Texto para filtrar a busca pelo nome do buffet.
+**Endpoint**: `GET tests`
 
 #### Resposta:
 
-Retorna um array de objetos, onde cada objeto representa um buffet. Cada buffet inclui todas as suas informações, exceto a foto de capa, que é retornada como uma URL.
+Retorna um array de objetos em json, onde cada objeto representa um exame. Cada exame inclui algumas informações como sobre o paciente, médico e tipo de exame.
 
 #### Exemplo de Resposta:
 
 ```json
 [
   {
-    "id": 1,
-    "brand_name": "Buffet do Big Boss",
-    "corporate_name": "Snake Buffets Ltda",
-    "cnpj": "77365411000105",
-    "phone": "11999999922",
-    "email": "snakebuffets@buffets.com",
-    "address": "Rua do Buffet, 123",
-    "neighborhood": "Bairro do Buffet",
-    "state": "São Paulo",
-    "city": "São Paulo",
-    "zip_code": "05164105",
-    "description": "Buffet de mercenários, especializado em festas de aniversário e casamento",
-    "payment_methods": "Dinheiro, Pix, cartão de crédito e débito",
-    "user_id": 1,
-    "created_at": "2024-05-16T15:41:17.111-03:00",
-    "updated_at": "2024-05-16T15:41:17.508-03:00",
-    "active": true,
-    "cover_photo": "http://localhost:3000/rails/active_storage/blobs/redirect/eyJfcmFpbHMiOnsiZGF0YSI6MSwicHVyIjoiYmxvYl9pZCJ9fQ==--2a12a76251a4c4aef8c765bea75f10d3cfdbe1dd/cover_bigboss.png"
+    "result_token": "IQCZ17",
+    "result_date": "2021-08-05",
+    "cpf": "048.973.170-88",
+    "name": "Emilly Batista Neto",
+    "email": "gerald.crona@ebert-quigley.com",
+    "birthday": "2001-03-11",
+    "doctor": {
+      "crm": "B000BJ20J4",
+      "crm_state": "PI",
+      "name": "Maria Luiza Pires"
+    },
+    "tests": [
+      {
+        "test_type": "hemácias",
+        "test_limits": "45-52",
+        "result": "97"
+      },
+      {
+        "test_type": "ácido úrico",
+        "test_limits": "15-61",
+        "result": "2"
+      }
+    ]
   },
   {
-    "id": 2,
-    "brand_name": "Auditore Festas",
-    "corporate_name": "Assassins Buffets Ltda",
-    "cnpj": "93125160000148",
-    "phone": "11999999988",
-    "email": "auditore@buffet.com",
-    "address": "Rua dos Buffets, 123",
-    "neighborhood": "Firenze",
-    "state": "Rio Grande do Sul",
-    "city": "Caxias do Sul",
-    "zip_code": "96213100",
-    "description": "Buffet especializado em culinária Italiana a moda da renascença, com foco em festas corporativas",
-    "payment_methods": "Dinheiro, Pix, cartão de crédito e débito",
-    "user_id": 2,
-    "created_at": "2024-05-16T15:41:18.385-03:00",
-    "updated_at": "2024-05-16T15:41:18.507-03:00",
-    "active": true,
-    "cover_photo": "http://localhost:3000/rails/active_storage/blobs/redirect/eyJfcmFpbHMiOnsiZGF0YSI6NCwicHVyIjoiYmxvYl9pZCJ9fQ==--83c04c8ddb9888bbcf5975a5af52f804cc82854e/cover_ezio.png"
-  }
+    "result_token": "0W9I67",
+    "result_date": "2021-07-09",
+    "cpf": "048.108.026-04",
+    "name": "Juliana dos Reis Filho",
+    "email": "mariana_crist@kutch-torp.com",
+    "birthday": "1995-07-03",
+    "doctor": {
+      "crm": "B0002IQM66",
+      "crm_state": "SC",
+      "name": "Maria Helena Ramalho"
+    },
+    "tests": [
+      {
+        "test_type": "hemácias",
+        "test_limits": "45-52",
+        "result": "28"
+      },
+      {
+        "test_type": "ácido úrico",
+        "test_limits": "15-61",
+        "result": "78"
+      }
+    ]
+  },
+  {
+    "result_token": "T9O6AI",
+    "result_date": "2021-11-21",
+    "cpf": "066.126.400-90",
+    "name": "Matheus Barroso",
+    "email": "maricela@streich.com",
+    "birthday": "1972-03-09",
+    "doctor": {
+      "crm": "B000B7CDX4",
+      "crm_state": "SP",
+      "name": "Sra. Calebe Louzada"
+    },
+    "tests": [
+      {
+        "test_type": "hemácias",
+        "test_limits": "45-52",
+        "result": "48"
+      },
+      {
+        "test_type": "leucócitos",
+        "test_limits": "9-61",
+        "result": "75"
+      },
+      {
+        "test_type": "ácido úrico",
+        "test_limits": "15-61",
+        "result": "10"
+      }
+    ]
+  },
 ]
 ```
 
@@ -186,103 +221,22 @@ Retorna um corpo em JSON contendo os detalhes daquele exame, como nome do pacien
 }
 ```
 
-## Listagem de tipos de eventos de um buffet
-Fornece uma lista com informações sobre os tipos de eventos disponíveis em um buffet específico.
+## Import de Dados de um arquivo CSV
+Fornece um endpoint que recebe um arquivo CSV e executa um programa Ruby em processamento assíncrono para importar os dados e inseri-los no banco de dados PostgreSQL. ( Idealmente esse upload é realizado através da interface no frontend )
 
-**Endpoint**: `GET api/v1/buffets/:buffet_id/events`
-
-#### Parâmetros Aceitos:
-
-- `buffet_id`: ID do Buffet. 
-
-#### Resposta:
-
-Resposta: Retorna um array de objetos, onde cada objeto representa um tipo de evento. Cada evento inclui todas as suas informações.
-
-
-#### Exemplo de Resposta:
-
-```json
-[
-[
-  {
-    "id": 1,
-    "name": "Festa de Aniversário",
-    "description": "Festa de aniversário com bolo, doces e salgados",
-    "min_people": 20,
-    "max_people": 100,
-    "duration": 180,
-    "menu": "Bolo, doces, salgados, refrigerante, vinho",
-    "alcohol": "Sim",
-    "decoration": "Sim",
-    "parking_service": "Sim",
-    "at_buffet_location": "Sim",
-    "buffet_id": 1,
-    "created_at": "2024-05-16T15:41:17.564-03:00",
-    "updated_at": "2024-05-16T15:41:17.908-03:00",
-    "active": "Sim",
-    "partial_cancellation_days": null,
-    "partial_cancellation_fine": null,
-    "total_cancellation_days": null,
-    "total_cancellation_fine": null
-  },
-  {
-    "id": 2,
-    "name": "Casamento",
-    "description": "Casamento com bolo, doces e salgados",
-    "min_people": 50,
-    "max_people": 200,
-    "duration": 240,
-    "menu": "Bolo, doces, salgados, refrigerante, vinho, cerveja",
-    "alcohol": "Sim",
-    "decoration": "Sim",
-    "parking_service": "Sim",
-    "at_buffet_location": "Sim",
-    "buffet_id": 1,
-    "created_at": "2024-05-16T15:41:17.774-03:00",
-    "updated_at": "2024-05-16T15:41:17.774-03:00",
-    "active": "Sim",
-    "partial_cancellation_days": null,
-    "partial_cancellation_fine": null,
-    "total_cancellation_days": null,
-    "total_cancellation_fine": null
-  }
-]
-]
-```
-
-## Consulta de disponibilidade
-Verifica a disponibilidade para realizar um evento em um buffet específico
-
-**Endpoint**: `GET api/v1/buffets/:buffet_id/events/:id/availability`
+**Endpoint**: `POST /import`
 
 #### Parâmetros Aceitos:
 
-- `buffet_id`: ID do Buffet.
-
-- `id`: ID do tipo de evento.
-
-- `date`: Data do evento.
-
-- `guests`:  Quantidade de convidados.
+- `data.csv`: Arquivo CSV contendo os dados a serem importados.
 
 #### Resposta:
 
-Retorna um objeto que indica se o evento está disponível na data e para a quantidade de convidados especificada. Se o evento estiver disponível, o objeto também inclui o valor prévio do pedido. Se o evento não estiver disponível, o objeto inclui uma mensagem de erro.
+Resposta: Enfileira no redis usando os background jobs do sidekiq a tarefa de importação dos dados do arquivo recebido, após a inserção dos dados contidos no arquivo no banco de dados o arquivo CSV é deletado
 
-#### Exemplo de Resposta:
 
-api/v1/buffets/1/events/1/availability?date=14/01/2025&guests=10
+#### Exemplo de Resposta de Sucesso:
 
 ```json
-[
-{
-  "available": true,
-  "final_price": "2000.0"
-}
-]
+{ message: 'Data import started successfully' }
 ```
-
-
-
-
