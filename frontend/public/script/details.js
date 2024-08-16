@@ -17,13 +17,11 @@ export function displayExamDetails(exam, token) {
     return { test_type, test_limits, test_result };
   });
 
-  // Clear search form if it exists
   const searchInput = document.querySelector("input#search-input"); // Ensure this ID matches
   if (searchInput) {
     searchInput.value = "";
   }
 
-  // Create section
   const section = document.createElement("section");
   section.id = "test-info";
   section.className = "container my-5";
@@ -138,10 +136,10 @@ export function displayExamDetails(exam, token) {
   resultsCardBody.append(resultsTitle);
 
   const table = document.createElement("table");
-  table.className = "table table-striped table-hover mt-3"; // Adds striped rows
+  table.className = "table table-striped table-hover mt-3";
 
   const thead = document.createElement("thead");
-  thead.className = "table-light"; // Light background for header
+  thead.className = "table-light";
   const headRow = document.createElement("tr");
 
   const thType = document.createElement("th");

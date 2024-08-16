@@ -26,7 +26,7 @@ Basicamente, o sistema consiste em duas aplicações interdependentes. A primeir
 
 ## Objetivos desse Projeto
 
-Aprimorar o entendimento de aplicações Web e sua infraestrutura, explorando conceitos fundamentais como Docker, servidores web, processamento assíncrono, cache e requisições web. Utilizaremos o framework minimalista Sinatra para garantir que o processo seja realizado de forma manual, proporcionando um aprendizado mais profundo e prático.
+Aprimorar o entendimento de aplicações Web e sua infraestrutura, explorando conceitos fundamentais como Docker, servidores web, processamento assíncrono, cache e requisições web. Utilizando o framework minimalista Sinatra para garantir que o processo seja realizado de forma manual, proporcionando um aprendizado mais profundo e prático.
 
 ## Pré-requesitos
 
@@ -43,7 +43,7 @@ Este projeto foi desenvolvido usando Docker 27.1.1, então os únicos requisitos
 docker compose up 
 ```
 
-É normal este comando levar um tempinho para concluir, no final ele deve abrir as portas no localhost:4567 ( backend) e localhost:3000 (frontend).
+É normal este comando levar alguns minutos para concluir, no final ele deve abrir as portas no localhost:4567 ( backend) e localhost:3000 (frontend).
 
 ## Como rodar os testes :rocket:
 

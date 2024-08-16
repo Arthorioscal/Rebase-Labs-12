@@ -36,9 +36,8 @@ export async function fetch_exams_token(token) {
     return exam;
   } catch (error) {
     console.error('Fetch error:', error);
-    // Optionally, you can add more user-friendly error handling here
     displayErrorMessage('Falha em buscar o exame. Verifique o token e tente novamente.');
-    throw error; // Re-throw the error to be caught in the calling function
+    throw error;
   }
 }
 

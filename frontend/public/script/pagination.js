@@ -5,8 +5,7 @@ const examsPerPage = 10;
 
 export function displayPage(page) {
   const container = document.getElementById('exams-container');
-  container.innerHTML = ''; // Clear previous content
-
+  container.innerHTML = '';
   const rowDiv = document.createElement('div');
   rowDiv.className = 'row';
 
@@ -29,7 +28,7 @@ export function updatePaginationControls() {
 
   const prevButton = document.createElement('button');
   prevButton.innerHTML = '&larr; Voltar';
-  prevButton.className = 'btn btn-primary mx-2 mb-1'; // Bootstrap classes
+  prevButton.className = 'btn btn-primary mx-2 mb-1';
   prevButton.disabled = currentPage === 1;
   prevButton.addEventListener('click', () => {
     if (currentPage > 1) {
@@ -40,7 +39,7 @@ export function updatePaginationControls() {
 
   const nextButton = document.createElement('button');
   nextButton.innerHTML = 'Próximo &rarr;';
-  nextButton.className = 'btn btn-primary mx-2 mb-1'; // Bootstrap classes
+  nextButton.className = 'btn btn-primary mx-2 mb-1';
   nextButton.disabled = currentPage === totalPages;
   nextButton.addEventListener('click', () => {
     if (currentPage < totalPages) {

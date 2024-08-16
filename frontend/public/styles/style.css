@@ -1,11 +1,11 @@
 .navbar {
-  margin-bottom: 0px; /* Adjust the value as needed */
+  margin-bottom: 0px;
   padding: 0%;
 }
 
 .card-link-hover:hover .card {
-  outline: 2px solid #007bff; /* Contorno azul */
-  outline-offset: -1px; /* Ajuste opcional para o espaço entre o contorno e o elemento */
+  outline: 2px solid #007bff;
+  outline-offset: -1px;
 }
 
 .alert {

@@ -4,13 +4,12 @@ export function createCard(exam, rowDiv, container) {
   const colDiv = document.createElement('div');
   colDiv.className = 'col-md-6 mb-4';
 
-  // Create a clickable card element
   const cardLink = document.createElement('a');
   cardLink.href = '#';
-  cardLink.className = 'text-decoration-none card-link-hover'; // Add custom class for hover effect
+  cardLink.className = 'text-decoration-none card-link-hover';
   cardLink.addEventListener('click', (event) => {
-    event.preventDefault(); // Prevent default anchor behavior
-    fetch_exams_token(exam.result_token); // Call the function when the card is clicked
+    event.preventDefault();
+    fetch_exams_token(exam.result_token);
   });
 
   const card = document.createElement('div');

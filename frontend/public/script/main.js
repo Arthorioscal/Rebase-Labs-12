@@ -40,7 +40,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     if (container) container.innerHTML = '';
     if (messageContainer) messageContainer.innerHTML = '';
-    if (errorContainer) errorContainer.innerHTML = ''; // Clear previous error card
+    if (errorContainer) errorContainer.innerHTML = '';
 
     if (token) {
       fetch_exams_token(token)
