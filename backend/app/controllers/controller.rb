@@ -20,30 +20,39 @@ class Controller < Sinatra::Base
 
   get '/tests' do
     content_type :json
-    tests = Test.all.map do |test|
-      {
-        result_token: test.token,
-        result_date: test.result_date,
-        cpf: test.patient[:cpf],
-        name: test.patient[:name],
-        email: test.patient[:email],
-        birthday: test.patient[:birth_date],
-        doctor: {
-          crm: test.doctor[:crm],
-          crm_state: test.doctor[:crm_state],
-          name: test.doctor[:name]
-        },
-        tests: test.test_results.map do |result|
-          {
-            test_type: result.type,
-            test_limits: result.limits,
-            result: result.result
-          }
-        end
-      }
+    begin
+      tests = Test.all.map do |test|
+        {
+          result_token: test.token,
+          result_date: test.result_date,
+          cpf: test.patient[:cpf],
+          name: test.patient[:name],
+          email: test.patient[:email],
+          birthday: test.patient[:birth_date],
+          doctor: {
+            crm: test.doctor[:crm],
+            crm_state: test.doctor[:crm_state],
+            name: test.doctor[:name]
+          },
+          tests: test.test_results.map do |result|
+            {
+              test_type: result.type,
+              test_limits: result.limits,
+              result: result.result
+            }
+          end
+        }
+      end
+      puts "Tests to be returned: #{tests}" # Debugging statement
+      status 200
+      tests.to_json
+    rescue ActiveRecord::RecordNotFound => e
+      status 404
+      { error: "Records not found: #{e.message}" }.to_json
+    rescue StandardError => e
+      status 500
+      { error: "Internal server error: #{e.message}" }.to_json
     end
-    puts "Tests to be returned: #{tests}" # Debugging statement
-    tests.to_json
   end
 
   get '/tests/:token' do

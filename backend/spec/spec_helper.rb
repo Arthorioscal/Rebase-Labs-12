@@ -5,6 +5,9 @@ require 'json'
 require 'byebug'
 require 'rake'
 require 'sidekiq/testing'
+require 'sinatra'
+require 'redis'
+require 'connection_pool'
 require_relative '../lib/database_connection'
 require_relative '../app/controllers/controller'
 require_relative '../app/models/doctor'
@@ -23,6 +26,10 @@ DB_CONNECTION = PG.connect(
 DB_CONNECTION.exec('SET client_min_messages TO WARNING;')
 
 load File.expand_path('../Rakefile', __dir__)
+
+$redis = ConnectionPool.new(size: 5, timeout: 5) do
+  Redis.new(url: ENV['REDIS_URL'] || 'redis://redis:6379/0')
+end
 
 def truncate_tables(connection)
   tables = connection.exec("SELECT tablename FROM pg_tables WHERE schemaname = 'public';")
@@ -52,6 +59,7 @@ RSpec.configure do |config|
   config.around(:each) do |example|
     truncate_tables(DB_CONNECTION)
     Sidekiq::Job.clear_all
+    $redis.with(&:flushdb)
     example.run
   end
 
@@ -62,5 +70,14 @@ RSpec.configure do |config|
     DB_CONNECTION.close
     puts 'Dropping test database...'
     Rake::Task['db:drop_test'].invoke
+    ['data.csv', 'reduced_data.csv'].each do |file_name|
+      file_path = File.join(Dir.pwd, file_name)
+      if File.exist?(file_path)
+        File.delete(file_path)
+        puts "File deleted: #{file_path}"
+      else
+        puts "File not found: #{file_path}"
+      end
+    end
   end
 end

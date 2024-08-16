@@ -12,6 +12,7 @@ RSpec.describe ImportDataJob, type: :job do
     end
 
     it 'calls the import_data method' do
+      data_csv = File.join(File.dirname(__FILE__), '..', '..', 'db', 'persistence', 'data.csv')
       import_data_spy = spy('import_data')
       allow_any_instance_of(ImportDataJob).to receive(:import_data).and_call_original
       allow_any_instance_of(ImportDataJob).to receive(:import_data).and_wrap_original do |method, *args|
@@ -20,7 +21,7 @@ RSpec.describe ImportDataJob, type: :job do
       end
 
       ImportDataJob.clear
-      ImportDataJob.perform_async
+      ImportDataJob.perform_async(data_csv)
       ImportDataJob.drain
 
       expect(import_data_spy).to have_received(:call).at_least(:once)

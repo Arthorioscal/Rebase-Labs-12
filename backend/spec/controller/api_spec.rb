@@ -89,11 +89,14 @@ RSpec.describe Controller, type: :request do
 
   describe '/import' do
     it 'successfully imports a CSV file' do
-      post '/import'
+      file_path = File.join(File.dirname(__FILE__), '..', 'support', 'reduced_data.csv')
+      uploaded_file = Rack::Test::UploadedFile.new(file_path, 'text/csv')
+
+      post '/import', file: uploaded_file
 
       expect(last_response).to be_ok
       actual_response = JSON.parse(last_response.body)
-      expect(actual_response['message']).to eq('Data imported successfully')
+      expect(actual_response['message']).to eq('Data import started successfully')
       expect(Sidekiq::Worker.jobs.size).to eq(1)
     end
   end

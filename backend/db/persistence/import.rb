@@ -44,7 +44,12 @@ def import_data(file)
   ensure
     conn.close
     puts 'Database connection closed'
-    File.delete(file.path) if File.exist?(file.path)
-    puts "File deleted: #{file.path}"
+
+    if file.path.include?('spec/support') || file.path.include?('db/persistence')
+      puts "File not deleted as it is in the spec/support directory: #{file.path}"
+    else
+      File.delete(file.path) if File.exist?(file.path)
+      puts "File deleted: #{file.path}"
+    end
   end
 end
