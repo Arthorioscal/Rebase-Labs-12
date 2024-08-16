@@ -256,3 +256,11 @@ Resposta: Enfileira no redis usando os background jobs do sidekiq a tarefa de im
 ```json
 { message: 'Data import started successfully' }
 ```
+
+## Considerações Finais :star:
+
+#### O que eu planejo mudar ou implementar nesse projeto no futuro?
+
+Gostaria de ter implementado a lógica de cache de maneira mais organizada e eficiente. A utilização do Redis para fazer o cache acabou se tornando um pouco confusa e que gerou muitos problemas, principalmente por ser algo novo para mim. Além disso, hesitei em implementar um reverse proxy com NGINX, pensando que não agregaria tanto ao projeto, mas eu acredito que seria um excelente material de estudo e valeria a pena. Além disso deixar o frontend mais reativo e eficiente seria interessante também.
+
+Muito Obrigado!
