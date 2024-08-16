@@ -44,5 +44,7 @@ def import_data(file)
   ensure
     conn.close
     puts 'Database connection closed'
+    File.delete(file.path) if File.exist?(file.path)
+    puts "File deleted: #{file.path}"
   end
 end
