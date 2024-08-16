@@ -42,6 +42,12 @@ RSpec.describe 'API', type: :request do
     it 'imports a list of exams' do
       file_path = 'spec/support/reduced_data.csv'
       file = Rack::Test::UploadedFile.new(file_path, 'text/csv')
+      response_body = { message: 'Importando Dados, aguarde um momento.' }.to_json
+
+      conn = double('Faraday::Connection')
+      response = double('Faraday::Response', success?: true, body: response_body)
+      allow(conn).to receive(:post).and_return(response)
+      allow(Faraday).to receive(:new).and_return(conn)
 
       post '/import', file: file
 
@@ -57,6 +63,7 @@ RSpec.describe 'API', type: :request do
       actual_response = JSON.parse(last_response.body)
       expect(actual_response['message']).to include('Nenhum arquivo foi enviado.')
     end
+
     it 'returns error if file is not a CSV' do
       file_path = 'spec/support/test_token.json'
       file = Rack::Test::UploadedFile.new(file_path, 'application/json')

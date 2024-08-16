@@ -2,11 +2,9 @@ require 'spec_helper'
 
 RSpec.describe 'User Access Index Page', type: :system, js: true do
   before do
-    file_path = 'spec/support/reduced_data.csv'
-    file = Rack::Test::UploadedFile.new(file_path, 'text/csv')
-
-    post '/import', file: file
-    sleep 4
+    mock_path = File.expand_path('../support/mock.json', __dir__)
+    mock = JSON.parse(File.read(mock_path))
+    allow(Faraday).to receive(:get).and_return(double(body: mock.to_json))
   end
 
   it 'with success and exhibits the exam list in the first page' do

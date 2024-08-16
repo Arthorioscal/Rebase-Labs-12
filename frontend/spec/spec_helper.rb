@@ -33,7 +33,7 @@ Capybara.default_max_wait_time = 10
 
 DB_CONNECTION = PG.connect(
   host: 'postgres',
-  dbname: ENV['DATABASE_NAME'] || 'test_rebaselabs',
+  dbname: ENV['DATABASE_NAME'] ||'test_rebaselabs',
   user: 'user',
   password: 'pass'
 )
