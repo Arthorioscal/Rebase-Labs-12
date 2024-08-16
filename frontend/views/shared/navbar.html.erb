@@ -1,16 +1,48 @@
 <nav class="navbar navbar-expand bg-light shadow-sm p-0">
   <div class="container navbar">
     <a class="navbar-brand" href="/">
-      <img src="/styles/logo.svg" alt="Icon" width="40" height="40" class="me-2">
-      ExamListing App
+      <img src="/styles/logo.svg" alt="Icon" width="60" height="60" class="me-2" style="margin-right: 20px;">
+      <span style="color: #000000;">RebaseLabs Application</span>
     </a>    
     <div id="nav-form" class="d-flex flex-column ms-auto">
-      <input type="file" id="file-input" accept=".csv">
-      <button id="import-button" class="btn btn-outline-success ms-2" type="button">Importar Dados</button>
-      <form id="search-form" class="d-flex search_bar">
+      <form class="d-flex align-items-center">
+        <div class="input-group">
+          <div class="custom-file">
+            <input type="file" id="file-input" accept=".csv" class="custom-file-input" aria-label="Upload CSV" style="display: none;">
+            <label class="custom-file-label" for="file-input" id="file-label">Choose file</label>
+          </div>
+          <div class="input-group-append">
+            <button id="import-button" class="btn btn-outline-dark ms-2" type="button">Importar Dados</button>
+          </div>
+        </div>
+      </form>
+      <form id="search-form" class="d-flex search_bar mt-2">
         <input id="search-input" class="form-control me-2" type="text" placeholder="Enter token" name="token">
         <button id="search-button" class="btn btn-primary" type="button">Procurar</button>
       </form>
     </div>
   </div>
 </nav>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    var fileInput = document.getElementById('file-input');
+    var fileLabel = document.getElementById('file-label');
+    var importButton = document.getElementById('import-button');
+
+    fileInput.addEventListener('change', function () {
+      var fileName = fileInput.files[0] ? fileInput.files[0].name : 'Choose file';
+      fileLabel.innerText = fileName;
+    });
+
+    importButton.addEventListener('click', function () {
+      if (fileInput.files.length > 0) {
+        var file = fileInput.files[0];
+        // Add your file import logic here
+        console.log('File ready to be imported:', file.name);
+      } else {
+        console.log('Please choose a file first.');
+      }
+    });
+  });
+</script>
