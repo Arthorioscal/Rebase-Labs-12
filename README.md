@@ -164,7 +164,7 @@ Retorna um array de objetos em json, onde cada objeto representa um exame. Cada 
 ```
 
 ## Detalhes de um Teste
-Fornece todos os detalhes de um buffet específico.
+Fornece detalhes de um teste específico ao fornecer um token para a busca.
 
 **Endpoint**: `GET tests/:token`
 
