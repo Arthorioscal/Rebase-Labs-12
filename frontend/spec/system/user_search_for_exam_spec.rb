@@ -37,4 +37,21 @@ RSpec.describe 'User Search For Exam', type: :system, js: true do
     expect(page).not_to have_content('Maria Helena Ramalho')
     expect(page).not_to have_content('Matheus Barroso')
   end
+
+  it 'and returns error if exam is not found' do
+    visit '/'
+
+    fill_in 'search-input', with: 'EUAMOOUTERWILDS'
+    click_on 'Procurar'
+
+    expect(page).to have_content('Falha em buscar o exame. Verifique o token e tente novamente.')
+  end
+
+  it 'leave the field in blank' do
+    visit '/'
+
+    click_on 'Procurar'
+
+    expect(page).to have_content('Por favor, insira um token válido')
+  end
 end

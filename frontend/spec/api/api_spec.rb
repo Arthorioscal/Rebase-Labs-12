@@ -27,6 +27,16 @@ RSpec.describe 'API', type: :request do
       actual_response = JSON.parse(last_response.body)
       expect(actual_response).to eq(expected_response)
     end
+
+    it 'returns error if exam is not found' do
+      allow(Faraday).to receive(:get).and_return(double(body: { error: 'Test not found' }.to_json))
+
+      get '/exams/LINKINPARKEMUITOBOM'
+
+      expect(last_response.status).to eq(404)
+      actual_response = JSON.parse(last_response.body)
+      expect(actual_response['error']).to eq('Test not found')
+    end
   end
 
   describe 'POST /import' do

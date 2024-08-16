@@ -39,7 +39,6 @@ class Test
     tests_data = fetch_from_cache('all_tests')
     if tests_data.nil? || tests_data.count != database_tests.count
       tests_data = fetch_tests_from_database_or_other_source
-      puts "Fetching from database again. Tests data count: #{tests_data.count}"
     end
 
     tests = parse_tests_data(tests_data)

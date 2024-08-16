@@ -1,6 +1,14 @@
 require 'spec_helper'
 
 RSpec.describe 'User Access Index Page', type: :system, js: true do
+  before do
+    file_path = 'spec/support/reduced_data.csv'
+    file = Rack::Test::UploadedFile.new(file_path, 'text/csv')
+
+    post '/import', file: file
+    sleep 2
+  end
+
   it 'with success and exhibits the exam list in the first page' do
     visit '/'
 
