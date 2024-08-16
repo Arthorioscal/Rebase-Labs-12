@@ -43,7 +43,6 @@ class Controller < Sinatra::Base
           end
         }
       end
-      puts "Tests to be returned: #{tests}" # Debugging statement
       status 200
       tests.to_json
     rescue ActiveRecord::RecordNotFound => e

@@ -36,15 +36,10 @@ class Test
 
   def self.all
     database_tests = fetch_tests_from_database_or_other_source
-    puts "Database tests count: #{database_tests.count}" # Debugging statement
-
     tests_data = fetch_from_cache('all_tests')
-    puts "Tests data count: #{tests_data ? tests_data.count : 0}" # Debugging statement
-
-    # Loop until the counts are equal
     if tests_data.nil? || tests_data.count != database_tests.count
       tests_data = fetch_tests_from_database_or_other_source
-      puts "Fetching from database again. Tests data count: #{tests_data.count}" # Debugging statement
+      puts "Fetching from database again. Tests data count: #{tests_data.count}"
     end
 
     tests = parse_tests_data(tests_data)
@@ -55,21 +50,15 @@ class Test
   def self.find_by_token(token)
     cache_key = "test_#{token}"
 
-    # Fetch all test data and cache it
     all_tests_data = fetch_all_tests_data_from_database
     all_tests_data.each do |test_data|
-      cache_key = "test_#{test_data['token']}"
-      cache_tests(cache_key, test_data)
+      individual_cache_key = "test_#{test_data[:token]}"
+      cache_tests(individual_cache_key, test_data)
     end
-    puts 'All test data cached' # Debugging statement
-
-    # Fetch from cache
     test_data = fetch_from_cache(cache_key)
-    puts "Cache fetch for #{cache_key}: #{test_data ? 'hit' : 'miss'}" # Debugging statement
 
     return unless test_data
 
-    # Parse the test data
     parse_tests_data([test_data]).first
   end
 
@@ -107,7 +96,10 @@ class Test
 
     # Fetch all test records
     tests_sql = 'SELECT * FROM tests'
-    tests_result = conn.exec(tests_sql)
+    tests_result = conn.exec(tests_sql).to_a
+
+    # Debug output
+    puts "Fetched #{tests_result.size} test records"
 
     # Fetch all patient records
     patients_sql = 'SELECT * FROM patients'
@@ -127,7 +119,7 @@ class Test
     test_types_hash = test_types_result.group_by { |test_type| test_type['test_id'] }
 
     # Combine the data
-    tests_result.map do |test|
+    combined_data = tests_result.map do |test|
       {
         id: test['id'],
         token: test['token'],
@@ -137,6 +129,11 @@ class Test
         test_results: test_types_hash[test['id']] || []
       }
     end
+
+    # Debug output
+    puts "Combined data: #{combined_data.inspect}"
+
+    combined_data
   end
 
   def self.group_tests(result)

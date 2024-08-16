@@ -26,33 +26,40 @@ class App < Sinatra::Base
 
   post '/import' do
     content_type :json
-
+  
     if params[:file] && params[:file][:tempfile]
       file = params[:file][:tempfile]
       filename = params[:file][:filename]
+      file_type = params[:file][:type]
+  
+      unless file_type == 'text/csv'
+        status 400
+        return { message: 'Tipo de arquivo inválido. Apenas arquivos CSV são permitidos.' }.to_json
+      end
+  
       backend_url = ENV['BACKEND_URL'] || 'http://localhost:4567'
-
+  
       conn = Faraday.new do |f|
         f.request :multipart
         f.request :url_encoded
         f.adapter Faraday.default_adapter
       end
-
+  
       payload = {
         file: Faraday::Multipart::FilePart.new(file, 'text/csv', filename)
       }
-
+  
       response = conn.post("#{backend_url}/import", payload)
-
+  
       result = if response.success?
                  { message: 'Importando Dados, aguarde um momento.' }
                else
                  { message: 'Erro ao importar dados.' }
                end
-
-      puts "Import response: #{result.to_json}" # Log the response for debugging
+  
       result.to_json
     else
+      status 400
       { message: 'Nenhum arquivo foi enviado.' }.to_json
     end
   end

@@ -31,11 +31,32 @@ RSpec.describe 'API', type: :request do
 
   describe 'POST /import' do
     it 'imports a list of exams' do
-      post '/import'
+      file_path = 'spec/support/reduced_data.csv'
+      file = Rack::Test::UploadedFile.new(file_path, 'text/csv')
+
+      post '/import', file: file
 
       expect(last_response).to be_ok
       actual_response = JSON.parse(last_response.body)
       expect(actual_response['message']).to eq('Importando Dados, aguarde um momento.')
+    end
+
+    it 'returns error if not file is uploaded' do
+      post '/import'
+
+      expect(last_response.status).to eq(400)
+      actual_response = JSON.parse(last_response.body)
+      expect(actual_response['message']).to include('Nenhum arquivo foi enviado.')
+    end
+    it 'returns error if file is not a CSV' do
+      file_path = 'spec/support/test_token.json'
+      file = Rack::Test::UploadedFile.new(file_path, 'application/json')
+
+      post '/import', file: file
+
+      expect(last_response.status).to eq(400)
+      actual_response = JSON.parse(last_response.body)
+      expect(actual_response['message']).to include('Tipo de arquivo inválido. Apenas arquivos CSV são permitidos.')
     end
   end
 end
