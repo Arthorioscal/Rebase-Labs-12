@@ -1,4 +1,3 @@
-require 'sidekiq/web'
 require 'rack/session'
 require 'securerandom'
 require_relative 'initializer'

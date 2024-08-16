@@ -4,13 +4,9 @@ require_relative '../../lib/database_connection'
 
 def import_data(file)
   conn = DatabaseConnection.db_connection
-
   begin
-    puts "Connecting to database: #{conn.db}"
-    puts "Processing file: #{file.path}"
 
     unless File.exist?(file.path)
-      puts "File not found: #{file.path}"
       return
     end
 
@@ -43,10 +39,8 @@ def import_data(file)
     puts "Error during import: #{e.message}"
   ensure
     conn.close
-    puts 'Database connection closed'
 
     if file.path.include?('spec/support') || file.path.include?('db/persistence')
-      puts "File not deleted as it is in the spec/support directory: #{file.path}"
     else
       File.delete(file.path) if File.exist?(file.path)
       puts "File deleted: #{file.path}"

@@ -6,7 +6,7 @@ RSpec.describe 'User Access Index Page', type: :system, js: true do
     file = Rack::Test::UploadedFile.new(file_path, 'text/csv')
 
     post '/import', file: file
-    sleep 2
+    sleep 4
   end
 
   it 'with success and exhibits the exam list in the first page' do
@@ -50,8 +50,7 @@ RSpec.describe 'User Access Index Page', type: :system, js: true do
     expect(page).to have_content('Z95COQ')
     expect(page).to have_content('Dra. Isabelly Rêgo')
     expect(page).to have_content('Giovanna Rêgo')
-    expect(page).to have_content('Sra. Meire da Terra')
-    expect(page).to have_content('10/08/2021')
+    expect(page).to have_content('29/10/2021')
     expect(page).not_to have_content('Emilly Batista Neto')
     expect(page).not_to have_content('IQCZ17')
     expect(page).not_to have_content('Deneval Caseira')

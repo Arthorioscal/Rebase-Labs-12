@@ -6,12 +6,10 @@ gem 'faraday-multipart'
 gem 'logger'
 gem 'pg'
 gem 'puma'
-gem 'rack'
 gem 'rack-cors'
 gem 'rack-flash3'
 gem 'rackup'
 gem 'sinatra'
-gem 'webdrivers'
 
 group :test do
   gem 'capybara'

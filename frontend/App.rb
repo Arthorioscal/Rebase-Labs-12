@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'sinatra/base'
 require 'json'
 require 'faraday'
@@ -36,7 +38,7 @@ class App < Sinatra::Base
   get '/exams' do
     content_type :json
 
-    response = Faraday.get("#{backend_url}/tests")
+    response = Faraday.get("#{backend_url}/api/v1/tests")
     exams = JSON.parse(response.body)
 
     exams.to_json
@@ -45,7 +47,7 @@ class App < Sinatra::Base
   get '/exams/:token' do
     content_type :json
 
-    response = Faraday.get("#{backend_url}/tests/#{params[:token]}")
+    response = Faraday.get("#{backend_url}/api/v1/tests/#{params[:token]}")
     exam = JSON.parse(response.body)
 
     exam.to_json
@@ -59,7 +61,7 @@ class App < Sinatra::Base
       file: Faraday::Multipart::FilePart.new(file, 'text/csv', params[:file][:filename])
     }
 
-    response = faraday_connection.post("#{backend_url}/import", payload)
+    response = faraday_connection.post("#{backend_url}/api/v1/import", payload)
 
     result = if response.success?
                { message: 'Importando Dados, aguarde um momento.' }

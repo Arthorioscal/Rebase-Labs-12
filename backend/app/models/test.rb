@@ -97,9 +97,6 @@ class Test
     tests_sql = 'SELECT * FROM tests'
     tests_result = conn.exec(tests_sql).to_a
 
-    # Debug output
-    puts "Fetched #{tests_result.size} test records"
-
     # Fetch all patient records
     patients_sql = 'SELECT * FROM patients'
     patients_result = conn.exec(patients_sql).to_a
@@ -129,8 +126,6 @@ class Test
       }
     end
 
-    # Debug output
-    puts "Combined data: #{combined_data.inspect}"
 
     combined_data
   end

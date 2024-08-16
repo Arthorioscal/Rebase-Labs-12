@@ -1,8 +1,13 @@
+# frozen_string_literal: true
+
 require 'sidekiq'
 require 'sidekiq/web'
 require 'rack/cors'
 require 'redis'
 require 'connection_pool'
+require 'sinatra/base'
+require 'json'
+require 'sidekiq'
 require_relative '../app/controllers/controller'
 
 # Sidekiq configuration

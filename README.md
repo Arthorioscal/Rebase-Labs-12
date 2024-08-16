@@ -71,9 +71,9 @@ Os testes de Frontend tendem a levar um pouco mais de tempo por conta do Javascr
 
 - **puma**:  Servidor Web HTTP para lidar com as requisições
 
-- **redis**: Banco de dados em memória, foi utilizado para o enfileiramento de processos assíncronos e cache
+- **redis**: Banco de dados em memória, foi utilizado para o enfileiramento de processos assíncronos e serviço de cache
 
-- **sidekiq**: Biblioteca para os backgroundjobs utilizada
+- **sidekiq**: Biblioteca para os backgroundjobs utilizada ( Também permite a visualização web das fileiras ao acessar o localhost:4567/sidekiq )
 
 - **rspec**: Biblioteca de testes utilizada
 
@@ -86,7 +86,7 @@ A API está disponível na porta 4567, dentro do container de backend. As rotas 
 ## Listagem de Exames
 Este endpoint fornece uma listagem completa dos exames importados do arquivo CSV
 
-**Endpoint**: `GET tests`
+**Endpoint**: `GET api/v1tests`
 
 #### Resposta:
 
@@ -182,7 +182,7 @@ Retorna um array de objetos em json, onde cada objeto representa um exame. Cada 
 ## Detalhes de um Teste
 Fornece detalhes de um teste específico ao fornecer um token para a busca.
 
-**Endpoint**: `GET tests/:token`
+**Endpoint**: `GET api/v1tests/:token`
 
 #### Parâmetros Aceitos:
 
@@ -240,7 +240,7 @@ Retorna um corpo em JSON contendo os detalhes daquele exame, como nome do pacien
 ## Import de Dados de um arquivo CSV
 Fornece um endpoint que recebe um arquivo CSV e executa um programa Ruby em processamento assíncrono para importar os dados e inseri-los no banco de dados PostgreSQL. ( Idealmente esse upload é realizado através da interface no frontend )
 
-**Endpoint**: `POST /import`
+**Endpoint**: `POST api/v1/import`
 
 #### Parâmetros Aceitos:
 
