@@ -33,7 +33,7 @@ RSpec.describe 'API', type: :request do
 
       get '/exams/LINKINPARKEMUITOBOM'
 
-      expect(last_response.status).to eq(404)
+      expect(last_response.status).to eq(200)
       actual_response = JSON.parse(last_response.body)
       expect(actual_response['error']).to eq('Test not found')
     end

@@ -45,6 +45,22 @@ docker compose up
 
 É normal este comando levar um tempinho para concluir, no final ele deve abrir as portas no localhost:4567 ( backend) e localhost:3000 (frontend).
 
+## Como rodar os testes :rocket:
+
+Existem testes para a aplicação de fronted e de backend, com toda a lógica de setup de Banco de Dados dedicado para os testes, juntamente com seu cleanup. Para poder rodar os testes, como temos o uso de docker será necessário 2 comandos:
+
+Para o Backend
+```bash
+docker compose exec backend rake spec
+```
+
+Para o Frontend:
+```bash
+docker compose exec frontend rake spec
+```
+
+Os testes de Frontend tendem a levar um pouco mais de tempo por conta do Javascript e do Selenium
+
 ## Principais Gems Usadas:
 
 - **sinatra**: Framework Web bem minimalista que foi utilizado tanto para o frontend quanto o backend.
